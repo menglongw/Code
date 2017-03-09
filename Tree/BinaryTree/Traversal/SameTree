@@ -1,0 +1,57 @@
+Same Tree
+
+描述
+
+Given two binary trees, write a function to check if they are equal or not.
+Two binary trees are considered equal if they are structurally identical and the nodes have the same value.
+
+分析
+
+解法1：
+递归
+时间复杂度O(n)，空间复杂度O(logn)？不是O(n)?
+
+解法2：
+迭代
+时间复杂度O(n)，空间复杂度O(logn)?
+
+代码
+
+方法1：递归
+
+public class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;   // 终止条件
+        if (p == null || q == null) return false;  // 剪枝
+        return p.val == q.val      // 三方合并
+                && isSameTree(p.left, q.left)
+                && isSameTree(p.right, q.right);
+    }
+}
+
+方法2：迭代
+
+public class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        Stack<TreeNode> s = new Stack<>();
+        s.push(p);
+        s.push(q);
+
+        while(!s.empty()) {
+            p = s.pop();
+            q = s.pop();
+
+            if (p == null && q == null) continue;
+            if (p == null || q == null) return false;
+            if (p.val != q.val) return false;
+
+            s.push(p.left);
+            s.push(q.left);
+
+            s.push(p.right);
+            s.push(q.right);
+        }
+        return true;
+    }
+}
+
