@@ -1,0 +1,84 @@
+Symmetric Tree
+
+描述
+
+Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+
+For example, this binary tree [1,2,2,3,4,4,3] is symmetric:
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+But the following [1,2,2,null,3,null,3] is not:
+    1
+   / \
+  2   2
+   \   \
+   3    3
+Note:
+Bonus points if you could solve it both recursively and iteratively.
+
+分析
+
+解法1：
+递归，两个节点, a和b的值相等，则看a.left和b.right是否对称，再看a.right和b.left是否对称
+时间复杂度O(n)，空间复杂度O(logn)？
+
+解法2：
+迭代
+时间复杂度O(n)，空间复杂度O(logn)？
+  
+代码
+
+方法1：递归
+
+public class Solution {
+    // an empty tree is symmetric
+    public boolean isSymmetric(TreeNode root) {
+        if(root == null)
+            return true;
+        
+        return isSymmetric(root.left, root.right);
+    }
+    
+    private boolean isSymmetric(TreeNode a, TreeNode b) {
+        
+        if((a != null && b == null) || (a == null && b != null))
+            return false;
+        else if(a == null && b == null)
+            return true;
+
+        return a.val == b.val && isSymmetric(a.left, b.right) && isSymmetric(a.right, b.left);
+    }
+}
+
+方法2：迭代
+
+public class Solution {
+    public boolean isSymmetric (TreeNode root) {
+        if (root == null) return true;
+
+        Stack<TreeNode> s = new Stack<>();
+        s.push(root.left);
+        s.push(root.right);
+
+        while (!s.isEmpty()) {
+            TreeNode p = s.pop ();
+            TreeNode q = s.pop ();
+
+            if (p == null && q == null) continue;
+            if (p == null || q == null) return false;
+            if (p.val != q.val) return false;
+
+            s.push(p.left);
+            s.push(q.right);
+
+            s.push(p.right);
+            s.push(q.left);
+        }
+
+        return true;
+    }
+}
