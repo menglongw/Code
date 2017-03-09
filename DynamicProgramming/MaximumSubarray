@@ -17,7 +17,6 @@ currentMax+nums[i] > nums[i]前面的元素没拖后腿可以再继续往后看�
 
 时间复杂度O(n)，空间复杂度O(1)
 
-
 代码
 
 public class Solution {
