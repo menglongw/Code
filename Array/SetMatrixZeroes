@@ -1,0 +1,45 @@
+Set Matrix Zeroes
+
+描述
+
+Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in place.
+
+分析
+
+扫一遍矩阵，把所有有0的行和列分别标出来。
+再扫一遍矩阵，只要一个元素的行或列被标记为0则把此元素设为0。
+
+时间复杂度O(m*n)，空间复杂度O(m+n)
+
+代码
+
+public class Solution {
+    public void setZeroes(int[][] matrix) {
+        if(matrix == null || matrix.length == 0) {
+            return;
+        }
+        
+        int rLen = matrix.length;
+        int cLen = matrix[0].length;
+        
+        boolean[] rows = new boolean[rLen];
+        boolean[] cols = new boolean[cLen];
+        
+        for(int i=0; i<rLen; i++) {
+            for(int k=0; k<cLen; k++) {
+                if(matrix[i][k] == 0) {
+                    rows[i] = true;
+                    cols[k] = true;
+                }
+            }
+        }
+        
+        for(int i=0; i<rows.length; i++) {
+            for(int k=0; k<cols.length; k++) {
+                if(rows[i] == true || cols[k] == true) {
+                    matrix[i][k] = 0;
+                }
+            }
+        }
+    }
+}

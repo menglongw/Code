@@ -1,0 +1,43 @@
+Contains Duplicate II
+
+描述
+
+Given an array of integers and an integer k, find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the absolute difference between i and j is at most k.
+
+分析
+
+用hashmap保存信息，key是数组元素，value是下标。发现已经存在相同整数看一下下标差，如果小于等于k则返回true。
+否则让新的下标替代旧的下标，因为就算再发现相同数字，和旧下标差也会增大，一定比k大，所以要看和新下标差来决定。
+
+注意：这里有一个提前返回的优化，不用等所有的duplicate算出来再决定，因为题目只要有一个距离不大于k就可以，
+即便后面有距离更小的也不需要计算，因为不会影响结果。
+
+时间复杂度O(n)，空间复杂度O(n)
+ 
+代码
+ 
+public class Solution {
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        if(nums == null || nums.length == 0) {
+            return false;
+        }
+        
+        HashMap<Integer, Integer> map = new HashMap<>();
+        
+        for(int i=0; i<nums.length; i++) {
+            int num = nums[i];
+            
+            if(!map.containsKey(num)) {
+                map.put(num, i);
+            } else {
+                if(i - map.get(num) <= k) {
+                    return true;
+                } else {
+                    map.put(num, i);
+                }
+            }
+        }
+        
+        return false;
+    }
+}

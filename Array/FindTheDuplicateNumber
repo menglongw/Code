@@ -1,0 +1,60 @@
+Find the Duplicate Number
+
+描述
+
+Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive),
+prove that at least one duplicate number must exist.
+Assume that there is only one duplicate number, find the duplicate one.
+
+Note:
+You must not modify the array (assume the array is read only).
+You must use only constant, O(1) extra space.
+Your runtime complexity should be less than O(n2).
+There is only one duplicate number in the array, but it could be repeated more than once.
+
+分析
+
+遍历数组时，用一个集合记录已经遍历过的数，如果集合中已经有了说明是重复。但这样要空间，不符合。
+时间复杂度O(n)，空间复杂度O(n)
+
+如果不用空间的话，最直接的方法就是选择一个数，然后再遍历整个数组看是否有跟这个数相同的数就行了。
+时间复杂度O(n^2)，空间复杂度O(1)
+
+更有效的方法是对数组排序，这样遍历时遇到前后相同的数便是重复，但这样要修改原数组，不符合要求。
+时间复杂度O(nlogn)，空间复杂度O(1)
+
+实际上，我们可以根据抽屉原理简化刚才的暴力法。我们不一定要依次选择数，然后看是否有这个数的重复数，我们可以用二分法先选取n/2，
+然后遍历数组找小于等于n/2的数。如果数量大于n/2，说明1到n/2这个区间是肯定有重复数字的。
+否则重复数字在n/2到n的区间。重复这个过程直到low>high停止，此时low就是所求(为什么是low而不是high?)。另外注意比较的mid而不是nums[mid]。
+
+时间复杂度O(nlogn)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public int findDuplicate(int[] nums) {
+        //each integer is between 1 and n (n is len-1)
+        int low = 1;
+        int high = nums.length-1;
+        
+        while(low <= high) {
+            int count = 0;
+            int mid = low + (high-low)/2;
+            
+            for(int i=0; i<nums.length; i++) {
+                if(nums[i]<=mid) {
+                    count++;
+                }
+            }
+            
+            if(count <= mid) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        // why return low but not high?
+        return low;
+    }
+}

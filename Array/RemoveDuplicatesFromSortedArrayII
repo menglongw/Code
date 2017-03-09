@@ -1,0 +1,28 @@
+Remove Duplicates from Sorted Array II
+
+描述
+
+Follow up for "Remove Duplicates": What if duplicates are allowed at most twice?
+For example, given sorted array A = [1,1,1,2,2,3], your function should return length = 5, and A is now [1,1,2,2,3]
+
+分析
+
+index是下一个可以存放新数组数字的位置。因为要保证重复数字不超过2个，所以需要看index-2的数字和当前数字是否相同，当发现重复的时候index不变继续看下一个数字，否则把当前数字放到index位置，index加1然后继续。
+
+时间复杂度: O(n), 空间复杂度: O(1)
+
+代码
+
+public class Solution {
+    public int removeDuplicates(int[] nums) {
+        if (nums.length <= 2) return nums.length;
+
+        int index = 2;
+        for (int i = 2; i < nums.length; i++){
+            if (nums[i] != nums[index - 2])
+                nums[index++] = nums[i];
+        }
+
+        return index;
+    }
+};

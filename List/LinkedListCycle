@@ -1,0 +1,42 @@
+Linked List Cycle
+
+描述
+
+Given a linked list, determine if it has a cycle in it.
+
+Follow up:
+Can you solve it without using extra space?
+
+分析
+
+此题用快慢指针做，慢指针一次一步，快的一次两步。如果没有环，则快指针走到链表尾返回false，
+如果有环则一定相遇，相遇时返回true。
+有环为什么一定相遇，不会快指针超过慢指针而遇不到吗？不会，因为如果快指针超过慢指针，则说明上一次他俩一定
+在同一个节点上，说明已经相遇过。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode p1 = head;
+        ListNode p2 = head;
+        
+        while(p2 != null) {
+            p2 = p2.next;
+            if(p2 == null)
+                return false;
+
+            p2 = p2.next;
+            if(p2 == null)
+                return false;
+            
+            p1 = p1.next;
+            if(p1 == p2)
+                return true;
+        }
+        
+        return false;
+    }
+}

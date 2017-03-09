@@ -1,0 +1,60 @@
+Next Permutation
+
+描述
+
+Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+The replacement must be in-place, do not allocate extra memory.
+Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+1,2,3 → 1,3,2
+3,2,1 → 1,2,3
+1,1,5 → 1,5,1
+
+分析
+
+以123651为例，next permutation必定和123651共用最大的前缀，所以从最右边开始向左找，如果是递增序列，说明已经是最大，不能找到更大的next permutation。此时翻转数组作为结果。
+当递增序列第一次下降时（从5到3）此时说明有可能找到更大的序列。从右到左找到大于3的最小的数字5，交换后得到125631，此时125是next permutation和原始数组的公共前缀，然后把631反转（按升序排序），得到125136即为所求。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+
+    public void nextPermutation(int[] nums) {
+        // From right to left, find the first digit(partitionNumber) 
+        // which violates the increase trend
+        int p = nums.length - 2;
+        while (p > -1 && nums[p] >= nums[p + 1]) --p;
+
+        // If not found, which means current sequence is already the largest
+        // permutation, then rearrange to the first permutation and return false
+        if(p == -1) {
+            reverse(nums, 0, nums.length-1);
+            return;
+        }
+
+        // From right to left, find the first digit which is greater
+        // than the partition number, call it changeNumber
+        int c = nums.length - 1;
+        // p+1是从右数第一个峰值的位置
+        while (c > p+1 && nums[c] <= nums[p]) --c;
+
+        // Swap the partitionNumber and changeNumber
+        swap(nums, p, c);
+        // Reverse all the digits on the right of partitionNumber
+        reverse(nums, p+1, nums.length-1);
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
+    private void reverse(int[] nums, int begin, int end) {
+        while (begin < end) {
+            swap(nums, begin++, end--);
+        }
+    }
+}

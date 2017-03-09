@@ -1,0 +1,112 @@
+Reverse Linked List
+
+描述
+
+Reverse a singly linked list.
+
+Hint:
+A linked list can be reversed either iteratively or recursively. Could you implement both?
+
+分析
+
+再head左边造一个dummy结点，把head右边的结点，挪到dummy和head中间。
+在右边离head近的，挪到head左边后也是离head近的。
+
+迭代：时间复杂度O(n)，空间复杂度O(1)
+递归：时间复杂度O(n)，空间复杂度O(n)
+
+为什么递归的空间复杂度是O(n)？参见：http://softwareengineering.stackexchange.com/questions/285062/what-are-the-time-and-space-complexities-of-this-recursive-method-that-reverses
+
+Your code doesn't allocate any objects, nevertheless it has O(n) space complexity. 
+Whenever you call your method, the implementation will set up a call stack frame. 
+At the least, this includes the return address, but in this case you will also need stack space for the parameters and any local variables. 
+Even if a variable points only to null or to existing objects, we need some space to hold the pointer itself.
+
+This is completely language independent, 
+and it is not possible to recurse without using a bit of memory to remember where you should continue once you're finished
+(the one exception is a “tail call”, which is not present in your example, and which Java does not currently optimize away).
+
+Let's look at this simplified example:
+
+void countUpTo(int n) {
+   if (n > 0)
+       countUpTo(n - 1);
+   System.out.println(n);
+}
+
+Obviously there are no allocations. Nevertheless, we are dealing with O(n) space complexity. Let's execute countUpTo(5):
+
+countUpTo(5)
+countUpTo(4)
+countUpTo(3)
+countUpTo(2)
+countUpTo(1)
+countUpTo(0)
+println(0)
+println(1)
+println(2)
+println(3)
+println(4)
+println(5)
+
+Each level needs to remember to which outer level it must return. 
+So when we are at countUpTo(3), we have to remember the following three levels:
+main
+countUpTo(5)
+countUpTo(4)
+Therefore, after println(3), we return to the countUpTo(4) context, 
+which executes println(4) and then continues with the countUpTo(5) context.
+
+When we are at countUpTo(0), we have to remember the following five levels:
+
+main
+countUpTo(5)
+countUpTo(4)
+countUpTo(3)
+countUpTo(2)
+countUpTo(1)
+And remembering this stack needs space.
+
+So when a function has a recursion depth of n, 
+we can immediately say that it must at least have a space and time complexity of O(n).
+
+代码
+
+迭代解法
+
+public class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+        
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        
+        ListNode current = head.next;
+        
+        while(current != null) {
+            head.next = current.next;
+            current.next = dummy.next;
+            dummy.next = current;
+            current = head.next;
+        }
+        
+        return dummy.next;
+    }
+}
+
+递归解法
+
+public class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        ListNode tail = head.next;
+        head.next = null;
+        ListNode newHead = reverseList(tail);
+        tail.next = head;
+        
+        return newHead;
+    }
+}

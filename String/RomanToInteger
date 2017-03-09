@@ -1,0 +1,68 @@
+Roman to Integer
+
+描述
+
+Given a roman numeral, convert it to an integer.
+Input is guaranteed to be within the range from 1 to 3999.
+
+分析
+
+记数方法	
+I V X  L  C   D   M
+1 5 10 50 100 500 1000
+
+组数规则
+
+连写相加，但不能超过3次，如：III=3
+小数在右相加，如：VIII=8 XIII=12
+小数（限于 Ⅰ、X 和 C）在左相减，如：IV=4 IX=9
+Ⅰ、X 、C 在左只能用1次，连写或在右不能超过3次
+V 、L 、D 不能在左，在右只能用1次
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    //I(1), V(5), X(10), L(50), C(100), D(500), M(1000)
+    public int romanToInt(String s) {
+        
+        int result = 0;
+        if(s == null || s.isEmpty())
+            return result;
+
+        for(int i=0; i<s.length(); i++) {
+            char current = s.charAt(i);
+            
+            //减而不加的唯一情况是当前字符是I/X/C，并且当前字符小于下一个字符，且当前字符不是最后一个字符
+            //其余情况全部加
+            if((current == 'I' || current == 'X' ||current == 'C') && i<s.length()-1 && toInt(current) < toInt(s.charAt(i+1)))
+                result -= toInt(current);
+            else
+                result += toInt(current);
+        }
+        
+        return result;
+    }
+    
+    private int toInt(char roman) {
+        switch(roman) {
+            case 'I':
+                return 1;
+            case 'V':
+                return 5;
+            case 'X':
+                return 10;
+            case 'L':
+                return 50;
+            case 'C':
+                return 100;
+            case 'D':
+                return 500;
+            case 'M':
+                return 1000;
+            default:
+                return 0;
+        }
+    }
+}

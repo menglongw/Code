@@ -1,0 +1,38 @@
+Implement strStr()
+
+描述
+
+Implement strStr().
+
+Returns the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+分析
+
+暴力算法逐个字符检查
+时间复杂度O(m*n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public int strStr(String haystack, String needle) {
+        // 只需检查下标不超过n的字符，看看是否有needle，
+        // 如果needle以下标大于n的字符开始其长度会超过haystack，不需要检查
+        int n = haystack.length() - needle.length();
+
+        for(int i = 0; i <= n; i++) {
+            int j = i;
+            int k = 0;
+
+            while(j < haystack.length() && k < needle.length() && 
+                    haystack.charAt(j) == needle.charAt(k)) {
+                j++;
+                k++;
+            }
+
+            if (k == needle.length()) 
+                return i;
+        }
+
+        return -1;
+    }
+}

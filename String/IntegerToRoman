@@ -1,0 +1,43 @@
+Integer to Roman
+
+描述
+
+Given an integer, convert it to a roman numeral.
+Input is guaranteed to be within the range from 1 to 3999.
+
+分析
+
+记数方法	
+I V X  L  C   D   M
+1 5 10 50 100 500 1000
+
+组数规则
+
+连写相加，但不能超过3次，如：III=3
+小数在右相加，如：VIII=8 XIII=12
+小数（限于 Ⅰ、X 和 C）在左相减，如：IV=4 IX=9
+Ⅰ、X 、C 在左只能用1次，连写或在右不能超过3次
+V 、L 、D 不能在左，在右只能用1次
+
+时间复杂度O(num)，空间复杂度O(1)？感觉stringbuilder的空间复杂度是O(n)
+
+public class Solution {
+    public String intToRoman(int num) {
+        // In Java, single quotes can only take one character, use string instead
+        String[] symbols = {"M",  "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int[] values     = { 1000, 900,  500, 400,  100, 90,   50,  40,   10,  9,    5,   4,    1};
+        
+        StringBuilder builder = new StringBuilder();
+        
+        // 外层循环次数固定，时间复杂度取决于内层循环
+        for(int i=0; i<values.length; i++) {
+            // 题目说了最大到3999，所以不会出现多余三个M，多余三个同样的字符不符合罗马数字规范
+            while(num >= values[i]) {
+                builder.append(symbols[i]);
+                num -= values[i];
+            }
+        }
+        
+        return builder.toString();
+    }
+}

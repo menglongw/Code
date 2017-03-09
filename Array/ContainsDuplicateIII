@@ -1,0 +1,44 @@
+Contains Duplicate III
+
+描述
+
+Given an array of integers, find out whether there are two distinct indices i and j in the array such that the absolute difference between nums[i] and nums[j] is at most t and the absolute difference between i and j is at most k.
+
+分析
+
+用TreeSet的排序特性对数值差t查找subset，用长度为k的滑动窗口做下标距离的限制。窗口不断向前滑动，窗口外的数据被从TreeSet中删除，新数据进入到TreeSet中并被纳入窗口范围。如果任何时候窗口内数据存在duplicate并且差值不超过t则返回true。
+注意要用long防止int运算的溢出。
+
+时间复杂度O(nlogk), 空间复杂度O(k)
+
+代码
+
+public class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+       // if k < 1 that means no other elements to compare to
+       if(nums == null || nums.length == 0 || k < 1 || t < 0) {
+           return false;
+       }
+       
+       // use Long instead of Integer to avoid integer overflow
+       TreeSet<Long> set = new TreeSet<>();
+       
+       for(int i=0; i<nums.length; i++) {
+           // include the boundries
+           SortedSet subSet = set.subSet((long)nums[i]-t, true, (long)nums[i]+t, true);
+           
+           // no need to check the position diff because we remove the old elements which are out of the range.
+           if(!subSet.isEmpty()) {
+               return true;
+           }
+           
+           if(i>=k) {
+               set.remove((long)nums[i-k]);
+           }
+           
+           set.add((long)nums[i]);
+       }
+       
+       return false;
+    }
+}

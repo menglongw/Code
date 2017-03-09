@@ -1,0 +1,143 @@
+Game of Life
+
+描述
+
+According to the Wikipedia's article: "The Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970."
+
+Given a board with m by n cells, each cell has an initial state live (1) or dead (0). Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules (taken from the above Wikipedia article):
+
+Any live cell with fewer than two live neighbors dies, as if caused by under-population.
+Any live cell with two or three live neighbors lives on to the next generation.
+Any live cell with more than three live neighbors dies, as if by over-population..
+Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+Write a function to compute the next state (after one update) of the board given its current state.
+
+Follow up: 
+Could you solve it in-place? Remember that the board needs to be updated at the same time: You cannot update some cells first and then use their updated values to update other cells.
+In this question, we represent the board using a 2D array. In principle, the board is infinite, which would cause problems when the active area encroaches the border of the array. How would you address these problems?
+
+分析
+
+最简单的办法是新建一个矩阵保存下一轮局面。
+不过本提要求 inplace, 难度就瞬间增大了。因为我们修改一个位置的值后，它的旧值就丢失了，而它周围还有邻居依赖它的旧值。
+因为题目给出的是一个int矩阵，大有空间可以利用。我们可以换一种方式进行编码，假设对于每个点，值的含义为：
+状态0：死细胞转为死细胞
+状态1：活细胞转为活细胞
+状态2：活细胞转为死细胞
+状态3：死细胞转为活细胞
+得到这样一个矩阵后，最后将所有状态对2取模，状态0和2变成死细胞，1和3变成活细胞，就是所求的下一轮局面了。
+
+时间复杂度O(m*n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    private static final int DEAD = 0;
+    private static final int ALIVE = 1;
+
+    private static final int DEAD_TO_DEAD = 0;
+    private static final int ALIVE_TO_ALIVE = 1;
+    private static final int ALIVE_TO_DEAD = 2;
+    private static final int DEAD_TO_ALIVE = 3;
+    
+    // 判断某点在本轮变化前是否活着
+    private boolean isAliveOld(int obj) {
+        if (obj == ALIVE_TO_ALIVE || obj == ALIVE_TO_DEAD)
+            return true;
+        else
+            return false;
+    }
+
+    // 判断某点在本轮变化后是否活着
+    private boolean isAliveNew(int obj) {
+        if (obj % 2 == 1)
+            return true;
+        else
+            return false;
+    }
+
+    public void gameOfLife(int[][] board) {
+
+        //输入合法性检查
+        if (board == null) return;
+
+        int height = board.length;
+        if (height == 0) return;
+
+        int width = board[0].length;
+        if (width == 0) return;
+
+        //考察所有的点，变化其生命状态
+        int counter = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                
+                //统计周边生命生存情况
+                counter = 0;
+
+                // 左上角
+                if (i > 0 && j > 0 && isAliveOld(board[i - 1][j - 1]))
+                    counter++;
+
+                // 上
+                if (i > 0 && isAliveOld(board[i - 1][j]))
+                    counter++;
+
+                // 右上角
+                if (i > 0 && j < width - 1 && isAliveOld(board[i - 1][j + 1]))
+                    counter++;
+
+                // 左
+                if (j > 0 && isAliveOld(board[i][j - 1]))
+                    counter++;
+
+                // 右
+                if (j < width - 1 && isAliveOld(board[i][j + 1]))
+                    counter++;
+
+                // 左下角
+                if (i < height - 1 && j > 0 && isAliveOld(board[i + 1][j - 1]))
+                    counter++;
+
+                // 下
+                if (i < height - 1 && isAliveOld(board[i + 1][j]))
+                    counter++;
+
+                // 右下角
+                if (i < height - 1 && j < width - 1 && isAliveOld(board[i + 1][j + 1]))
+                    counter++;
+                
+                //根据指定点周边的生命生存情况决定当前点的变化
+                if (isAliveOld(board[i][j])) {
+                    if (counter < 2) {
+                        //1.存活单位周边的存活单位少于2个，该单位死亡
+                        board[i][j] = ALIVE_TO_DEAD;
+                    } else if (counter == 2 || counter == 3) {
+                        //2.存活单位周边的存活单位有2-3个，该单位继续存活
+                        board[i][j] = ALIVE_TO_ALIVE;
+                    } else {
+                        //3.存活单位周边的存活单位多余3个，该单位死亡
+                        board[i][j] = ALIVE_TO_DEAD;
+                    }
+                } else {
+                    if (counter == 3) {
+                        //4.死亡单位周边的存活单位恰好为3个，该单位变为存活状态
+                        board[i][j] = DEAD_TO_ALIVE;                    
+                    } else {
+                        board[i][j] = DEAD_TO_DEAD;
+                    }
+                }
+            }
+        }
+
+        //根据变换后的存活状态，重新赋予每个点的生死情况
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (isAliveNew(board[i][j]))
+                    board[i][j] = ALIVE;
+                else
+                    board[i][j] = DEAD;
+            }
+        }
+    }
+}

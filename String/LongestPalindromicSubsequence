@@ -1,0 +1,59 @@
+Longest Palindromic Subsequence
+
+描述
+
+Given a string s, find the longest palindromic subsequence's length in s.
+You may assume that the maximum length of s is 1000.
+
+Example 1:
+Input:
+"bbbab"
+Output:
+4
+One possible longest palindromic subsequence is "bbbb".
+
+Example 2:
+Input:
+"cbbd"
+Output:
+2
+One possible longest palindromic subsequence is "bb".
+
+分析
+
+动态规划
+
+如果s[i] == s[j](i < j， 并且i和j相邻(i+1=j))，那么dp[i][j]为2。
+
+如果s[i] == s[j](i == j， 同一个字符)，那么dp[i][j]为1。
+
+如果s[i] != s[j](i != j一定成立，否则s[i] == s[j])，
+那么dp[i][j] = Math.max(dp[i][j-1], dp[i+1][j])。
+
+时间复杂度O(n^2)，空间复杂度O(n^2)
+
+代码
+
+public class Solution {
+    public int longestPalindromeSubseq(String s) {
+        int len = s.length();
+        int[][] dp = new int[len][len];
+
+        for (int currentLen=1; currentLen<=len; currentLen++) {
+            for (int i=0; i+currentLen-1<len; i++) {
+                int j = i+currentLen-1;
+
+                if (s.charAt(i) == s.charAt(j))
+                    if(currentLen <= 2)
+                        // currentLen为1和2的情况拿出来单独处理，否则i+1大于j-1
+                        dp[i][j] = currentLen;
+                    else
+                        dp[i][j] = dp[i+1][j-1] + 2;
+                else
+                   dp[i][j] = Math.max(dp[i][j-1], dp[i+1][j]);
+            }
+        }
+              
+        return dp[0][len-1];
+    }
+}

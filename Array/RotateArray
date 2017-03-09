@@ -1,0 +1,50 @@
+Rotate Array
+
+描述
+
+Rotate an array of n elements to the right by k steps.
+For example, with n = 7 and k = 3, the array [1,2,3,4,5,6,7] is rotated to [5,6,7,1,2,3,4].
+
+Note:
+Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
+
+分析
+
+移动k步就是把后边的k个数保持顺序挪到前边，数组分成两段但各段顺序不变。
+这样可以挪k个数到前边，但此时这两段数字的顺序都反了，然后两段分别再将这两段翻转即可。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public void rotate(int[] nums, int k) {
+        if(nums == null || nums.length == 0 || k<1 || k%nums.length == 0) {
+            return;
+        }
+        
+        // 做数组长度整数倍的移动后数组相当于没变化
+        // 只需要移动跟取模值相等的步数即可
+        k = k % nums.length;
+        
+        // rotate k就是把后边的k个数保持顺序挪到前边，数组分成两段但各段顺序不变。
+        // 这样可以挪k个数到前边，但是两段的顺序都反了
+        reverse(nums, 0, nums.length-1);
+        // 所以需要反转
+        reverse(nums, 0, k-1);
+        // 反转
+        reverse(nums, k, nums.length-1);
+    }
+    
+    private void reverse(int[] nums, int start, int end) {
+        int temp = 0;
+        
+        while(start <  end) {
+            temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+            start++;
+            end--;
+        }
+    }
+}
