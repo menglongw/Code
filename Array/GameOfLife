@@ -68,12 +68,11 @@ public class Solution {
         if (width == 0) return;
 
         //考察所有的点，变化其生命状态
-        int counter = 0;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 
                 //统计周边生命生存情况
-                counter = 0;
+                int counter = 0;
 
                 // 左上角
                 if (i > 0 && j > 0 && isAliveOld(board[i - 1][j - 1]))
