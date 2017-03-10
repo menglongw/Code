@@ -1,0 +1,86 @@
+Binary Tree Inorder Traversal
+
+描述
+
+Given a binary tree, return the inorder traversal of its nodes' values.
+
+For example:
+Given binary tree [1,null,2,3],
+   1
+    \
+     2
+    /
+   3
+return [1,3,2].
+
+Note: Recursive solution is trivial, could you do it iteratively?
+
+分析
+
+解法1：迭代
+1. 只要左子树不为空就不断入栈左子树
+2. 左子树为空是，弹出父结点加入list然后把右子树入栈，然后继续步骤1，这就是中序遍历
+
+时间复杂度O(n)，空间复杂度O(n)
+
+解法2：递归
+
+时间复杂度O(n)，空间复杂度O(h)
+
+The space complexity of this traversal seems to be O(h).  h is the height of the tree.
+
+The best way to think about space complexity of recursive functions is (the number of stack frames)*(space  per stack frame).
+In worst case of this algorithm, we can have h stack frames. With each stack frame having O(1) space.
+So total space complexity is O(h).
+
+
+代码
+
+方法1：迭代
+
+public class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<Integer>();
+        
+        if(root == null)
+            return list;
+        
+        TreeNode current = root;
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        
+        while(!stack.isEmpty() || current != null) {
+            
+            if(current != null) {
+                // 只要左子树不为空就不断入栈左子树
+                stack.push(current);
+                current = current.left;
+            } else {
+                // 左子树为空是，弹出父结点加入list然后把右子树入栈，这就是中序遍历
+                current = stack.pop();
+                list.add(current.val);
+                current = current.right;
+            }
+        }
+        
+        return list;
+    }
+}
+
+方法2：递归
+
+public class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        traverse(root, result);
+        return result;
+    }
+    
+    private void traverse(TreeNode root, List<Integer> result) {
+        if(root == null)
+            return;
+        
+        traverse(root.left, result);
+        result.add(root.val);
+        traverse(root.right, result);
+    }
+}
