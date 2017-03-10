@@ -1,0 +1,56 @@
+Jump Game
+
+描述
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+Each element in the array represents your maximum jump length at that position.
+Determine if you are able to reach the last index.
+
+For example:
+A = [2,3,1,1,4], return true.
+A = [3,2,1,0,4], return false.
+
+分析
+
+一维DP，定义f[i]为从index 0走到第i步时，剩余的最大步数。
+
+那么转移方程可定义为
+f[i]=max(f[i−1],A[i−1])−1,i>0
+
+然后从左往右扫描，当f[i]<0的时候，意味着不可能走到i步，所以return false。
+如果走到最右端(f[nums.length - 1] >= 0，剩余步数不为负)，那么return true.
+如果用一个变量max代替数组f，空间复杂度变为O(1)
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public boolean canJump(int[] nums) {
+        int[] f = new int[nums.length];
+
+        for (int i = 1; i < nums.length; i++) {
+            f[i] = Math.max(f[i - 1], nums[i - 1]) - 1;
+            if (f[i] < 0)
+                return false;;
+        }
+
+        return true;
+    }
+}
+
+如果用一个变量max代替数组f，空间复杂度变为O(1)
+
+public class Solution {
+    public boolean canJump(int[] nums) {
+        int max = nums[0];
+
+        for (int i=1; i<nums.length; i++) {
+            max = Math.max(max, nums[i-1]) - 1;
+            if (max < 0)
+                return false;
+        }
+        
+        return true;
+    }
+}
