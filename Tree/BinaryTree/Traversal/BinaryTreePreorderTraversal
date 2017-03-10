@@ -25,7 +25,9 @@ Note: Recursive solution is trivial, could you do it iteratively?
 
 The space complexity of this traversal seems to be O(h).  h is the height of the tree.
 
-The best way to think about space complexity of recursive functions is (the number of stack frames)*(space  per stack frame). In worst case of this algorithm, we can have h stack frames. With each stack frame having O(1) space. So total space complexity is O(h).
+The best way to think about space complexity of recursive functions is (the number of stack frames)*(space  per stack frame).
+In worst case of this algorithm, we can have h stack frames. With each stack frame having O(1) space.
+So total space complexity is O(h).
 
 代码
 
