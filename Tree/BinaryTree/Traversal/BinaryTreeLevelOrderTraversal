@@ -1,0 +1,73 @@
+Binary Tree Level Order Traversal
+
+描述
+
+Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).
+
+For example:
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return its level order traversal as:
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+
+分析
+
+一层一层从左到右遍历，每一层用一个list记录数值，当前层遍历过程中要计算出下一层的结点数
+
+如果树是满树，结点数为n，树的高度为h，那么最下面一层的结点最多为2^(h-1)=n/2，空间复杂度为O(n/2)也就是O(n)
+如果树退化成链表，每层只有一个结点，空间复杂度为O(1)
+
+时间复杂度O(n)，空间复杂度O(n)
+
+代码
+
+public class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        
+        if(root == null) {
+            return result;
+        }
+        
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        // 当前层的结点数
+        int currentCount = 1;
+        
+        while(!queue.isEmpty()) {
+            // 下一层的结点数
+            int nextCount = 0;
+            List<Integer> values = new ArrayList<Integer>();
+
+            // 遍历树的一层的所有结点
+            while(currentCount > 0) {
+                TreeNode node = queue.poll();
+                values.add(node.val);
+                currentCount--;
+                
+                if(node.left != null) {
+                    queue.offer(node.left);
+                    nextCount++;
+                }
+                
+                if(node.right != null) {
+                    queue.offer(node.right);
+                    nextCount++;
+                }
+            }
+            
+            result.add(values);
+            currentCount = nextCount;
+        }
+        
+        return result;
+    }
+}
