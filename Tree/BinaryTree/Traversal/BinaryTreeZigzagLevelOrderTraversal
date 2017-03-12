@@ -30,7 +30,6 @@ return its zigzag level order traversal as:
 
 时间复杂度O(n)，空间复杂度O(n)
 
-
 代码
 
 public class Solution {
