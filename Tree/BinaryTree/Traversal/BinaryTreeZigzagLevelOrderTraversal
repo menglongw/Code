@@ -1,0 +1,86 @@
+
+Binary Tree Zigzag Level Order Traversal
+
+描述
+
+Given a binary tree, return the zigzag level order traversal of its nodes' values. 
+(ie, from left to right, then right to left for the next level and alternate between).
+
+For example:
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return its zigzag level order traversal as:
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+
+分析
+
+和level order traversal算法一样，只是多一个变量记录当前行的数值顺序是从左到右还是从右到左。
+如果是从右到左需要反转当前行后再加入结果列表。
+
+如果树是满树，结点数为n，树的高度为h，那么最下面一层的结点最多为2^(h-1)=n/2，空间复杂度为O(n/2)也就是O(n)
+如果树退化成链表，每层只有一个结点，空间复杂度为O(1)
+
+时间复杂度O(n)，空间复杂度O(n)
+
+
+代码
+
+public class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        
+        if(root == null) {
+            return result;
+        }
+        
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        // 当前层的结点数
+        int currentCount = 1;
+        boolean leftToRight = false;
+        
+        while(!queue.isEmpty()) {
+            // 下一层的结点数
+            int nextCount = 0;
+            List<Integer> values = new ArrayList<Integer>();
+
+            // 遍历树的一层的所有结点
+            while(currentCount > 0) {
+                TreeNode node = queue.poll();
+                values.add(node.val);
+                currentCount--;
+                
+                if(node.left != null) {
+                    queue.offer(node.left);
+                    nextCount++;
+                }
+                
+                if(node.right != null) {
+                    queue.offer(node.right);
+                    nextCount++;
+                }
+            }
+            
+            // 相邻行顺序相反
+            leftToRight = leftToRight ? false:true;
+            result.add(getValues(values, leftToRight));
+            currentCount = nextCount;
+        }
+        
+        return result;
+    }
+
+    private List<Integer> getValues(List<Integer> source, boolean leftToRight) {
+        if(!leftToRight)
+            Collections.reverse(source);
+        return source;
+    }
+}
