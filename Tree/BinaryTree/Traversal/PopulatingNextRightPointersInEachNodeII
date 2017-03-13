@@ -1,0 +1,71 @@
+Populating Next Right Pointers in Each Node II
+
+描述
+
+Follow up for problem "Populating Next Right Pointers in Each Node".
+
+What if the given tree could be any binary tree? Would your previous solution still work?
+
+Note:
+
+You may only use constant extra space.
+For example,
+Given the following binary tree,
+         1
+       /  \
+      2    3
+     / \    \
+    4   5    7
+After calling your function, the tree should look like:
+         1 -> NULL
+       /  \
+      2 -> 3 -> NULL
+     / \    \
+    4-> 5 -> 7 -> NULL
+    
+分析
+
+因为要求常数空间，所以不能用level order traversal那样使用queue的方法做。
+
+由于第一层本身就是对的，不需要处理，那么遍历第一层的时候可以把第二层处理好。
+遍历第二层的时候把第三层处理好。以此类推。需要两个变量，next表示下一层的起点，
+prev表示当前时刻下一层的前一个结点。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public void connect(TreeLinkNode root) {
+        TreeLinkNode current = root;
+
+        while (current!= null) {
+            TreeLinkNode next = null;
+            TreeLinkNode prev = null;
+
+            while(current != null) {
+                // 如果current结点的左右子树均为null，这里赋值后next还是null
+                // 下一次循环进来新的current还会在这里给next继续赋值
+                if (next == null)
+                    next = current.left != null ? current.left : current.right;
+
+                if (current.left != null) {
+                    if (prev != null)
+                        prev.next = current.left;
+                    prev = current.left;
+                }
+
+                if (current.right != null) {
+                    if (prev != null)
+                        prev.next = current.right;
+                    prev = current.right;
+                }
+                
+                current = current.next;
+            }
+
+            // turn to next level
+            current = next;
+        }
+    }
+}
