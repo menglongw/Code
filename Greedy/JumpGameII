@@ -1,0 +1,49 @@
+Jump Game II
+
+描述
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+Each element in the array represents your maximum jump length at that position.
+
+Your goal is to reach the last index in the minimum number of jumps.
+
+For example:
+Given array A = [2,3,1,1,4]
+
+The minimum number of jumps to reach the last index is 2. 
+(Jump 1 step from index 0 to 1, then 3 steps to the last index.)
+
+Note:
+You can assume that you can always reach the last index.
+
+分析
+
+维护两个指针，lastReach和currentReach。前者表示上一个区间内最远可到达的地方，后者表示当前区间内最远可到达的地方。
+currentReach在遍历当前区间时不断被更新，直到遍历超过lastReach时此时currentReach固定下来变成了新的lastReach，
+同时count加1，因为超过lastReach说明上一个区间的跳跃都到不了这里，必须有一次新的跳跃。
+最后返回count即可。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public int jump(int[] nums) {
+        int count = 0;
+        int lastReach = 0;
+        int currentReach = 0;
+        
+        for(int i=0; i<nums.length; i++) {
+            if(i > lastReach) {
+                count++;
+                lastReach = currentReach;
+            }
+            
+            currentReach = Math.max(i+nums[i], currentReach);
+        }
+        
+        return count;
+    }
+}
+
