@@ -12,7 +12,15 @@ A = [3,2,1,0,4], return false.
 
 分析
 
-一维DP，定义f[i]为从index 0走到第i步时，剩余的最大步数。
+解法1：贪婪算法
+
+顺序扫描数组，记录下能够到达的最远位置，达到或超过数组尾都属于可以到达
+
+时间复杂度O(n)，空间复杂度O(1)
+
+解法2：动态规划
+
+定义f[i]为从index 0走到第i步时，剩余的最大步数。
 
 那么转移方程可定义为
 f[i]=max(f[i−1],A[i−1])−1,i>0
@@ -24,6 +32,23 @@ f[i]=max(f[i−1],A[i−1])−1,i>0
 时间复杂度O(n)，空间复杂度O(1)
 
 代码
+
+方法1：贪婪算法
+
+public class Solution {
+    public boolean canJump(int[] nums) {
+        //当前能到达的最远位置
+        int jumpTo = 0;
+
+        for(int i=0; i<=jumpTo && jumpTo<nums.length-1; i++)
+            jumpTo = Math.max(i+nums[i], jumpTo);
+
+        return jumpTo >= nums.length-1;
+    }
+}
+
+
+方法2：动态规划
 
 public class Solution {
     public boolean canJump(int[] nums) {
