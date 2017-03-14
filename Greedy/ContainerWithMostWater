@@ -1,0 +1,42 @@
+Container With Most Water
+
+描述
+
+Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai).
+n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+
+Note: You may not slant the container and n is at least 2.
+
+分析
+
+两个指针指向最左端和最右端，算出当前容积和当前最大容积比较后得出新的最大容积。
+只要左指针不和右指针相遇，就把较短的竖线的指针向中间移动一下。因为水量取决于短
+的竖线，如果移动短的竖线说不定可以找到更高的竖线，即使此时x轴距离变短但如果竖线差
+足够大也会使容积更大。不断移动指针直到相遇，然后返回最大容积。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public int maxArea(int[] height) {
+
+        if(height == null || height.length < 2)
+            return 0;
+        
+        int maxArea = 0;
+        int l = 0;
+        int r = height.length-1;
+        
+        while(l<r) {
+            maxArea = Math.max(maxArea, Math.min(height[l], height[r]) * (r-l));
+            
+            if(height[l]<height[r])
+                l++;
+            else
+                r--;
+        }
+        
+        return maxArea;
+    }
+}
