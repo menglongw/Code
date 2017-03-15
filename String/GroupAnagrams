@@ -1,0 +1,51 @@
+Group Anagrams
+ 
+描述
+ 
+Given an array of strings, group anagrams together.
+
+For example, given: ["eat", "tea", "tan", "ate", "nat", "bat"], 
+Return:
+
+[
+  ["ate", "eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+Note: All inputs will be in lower-case.
+
+分析
+
+把每个字符串转换成字符数组后排序，然后生成新的字符串。此字符串是anagrams里面最小的，作为map的key。
+如果map里有对应的key则加入list，否则创建新kv pair加入list。
+将map的所有值即lists of anagram list加入result列表返回。
+
+时间复杂度O(nklogk)，空间复杂度O(nk)，k是最长的字符串的长度，n是原始字符串数组的长度。
+
+public class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> result = new ArrayList<>();
+        
+        if(strs == null || strs.length == 0)
+            return result;
+        
+        Map<String, List<String>> map = new HashMap<>();
+        
+        for(int i=0; i<strs.length; i++) {
+            char[] chs = strs[i].toCharArray();
+            Arrays.sort(chs);
+            String key = new String(chs);
+            
+            if(map.containsKey(key)) {
+                map.get(key).add(strs[i]);
+            } else {
+                List<String> l = new ArrayList<>();
+                l.add(strs[i]);
+                map.put(key, l);
+            }
+        }
+        
+        result.addAll(map.values());
+        return result;
+    }
+}
