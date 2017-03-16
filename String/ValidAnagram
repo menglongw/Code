@@ -1,0 +1,68 @@
+Valid Anagram
+
+描述
+
+Given two strings s and t, write a function to determine if t is an anagram of s.
+
+For example,
+s = "anagram", t = "nagaram", return true.
+s = "rat", t = "car", return false.
+
+Note:
+You may assume the string contains only lowercase alphabets.
+
+Follow up:
+What if the inputs contain unicode characters? How would you adapt your solution to such case?
+
+分析
+
+解法1：
+
+遍历两个字符串看看每个字符对应的个数在两个字符串里是否相等
+时间复杂度O(n)，空间复杂度O(1)（用map是O(n)，用数组是O(1)）
+
+解法2：
+
+两个字符串排序后相同是anagram，否则不是。
+时间复杂度O(nlogn)，空间复杂度O(1)
+
+代码
+
+方法1：
+
+public class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length() != t.length())
+            return false;
+
+        // 只有小写字母
+        int[] counts = new int[26];
+
+        for (int i=0; i<s.length(); i++) {
+            counts[s.charAt(i) - 'a'] += 1;
+            counts[t.charAt(i) - 'a'] -= 1;
+        }
+
+        for (int x : counts) {
+            if (x != 0) 
+                return false;
+        }
+
+        return true;
+    }
+}
+
+方法2：
+
+public class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length() != t.length())
+            return false;
+        
+        char[] chars = s.toCharArray();
+        char[] chars2 = t.toCharArray();
+        Arrays.sort(chars);
+        Arrays.sort(chars2);
+        return Arrays.equals(chars, chars2);
+    }
+}
