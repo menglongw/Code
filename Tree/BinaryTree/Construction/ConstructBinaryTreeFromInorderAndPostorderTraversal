@@ -1,0 +1,54 @@
+Construct Binary Tree from Inorder and Postorder Traversal
+
+描述
+
+Given inorder and postorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+
+分析
+
+比如树
+      1
+  2      3
+4   5  6
+postorder 4,5,2,6,3,1
+inorder  4,2,5,1,6,3
+postorder右边第一个元素就是inorder的parent，然后把inorder分为right子树和left子树，向下递归
+right子树有6,3所以right子树的postorder范围是从parent的start开始向右边数两个个。左边剩下的都是left子树的postorder范围了。
+
+找到pivot的循环时间复杂度是O(n)，n个结点都需要被当做pivot找出，所以时间复杂度是O(n^2)。
+
+时间复杂度O(n^2)，空间复杂度O(h)，h是树的高度。
+
+public class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        if(postorder == null || postorder.length == 0 || inorder == null
+            || inorder.length == 0 || postorder.length != inorder.length) {
+            return null;
+        }
+        
+        return build(postorder, postorder.length-1, 0, inorder, inorder.length-1, 0);
+    }
+    
+    private TreeNode build(int[] postorder, int pRight, int pLeft, int[] inorder, int iRight, int iLeft) {
+        if(pRight<pLeft || iRight<iLeft) {
+            return null;
+        }
+        
+        int iPivot = 0;
+        for(int i=0; i<=iRight; i++) {
+            if(postorder[pRight] == inorder[i]) {
+                iPivot = i;
+                break;
+            }
+        }
+        
+        TreeNode p = new TreeNode(inorder[iPivot]);
+        
+        p.right = build(postorder, pRight-1, pRight-(iRight-iPivot), inorder, iRight, iPivot+1);
+        p.left = build(postorder, pRight-(iRight-iPivot)-1, pLeft, inorder, iPivot-1, iLeft);
+        return p;
+    }
+}
