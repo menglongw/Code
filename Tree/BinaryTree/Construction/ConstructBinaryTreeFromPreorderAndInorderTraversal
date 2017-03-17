@@ -1,0 +1,54 @@
+Construct Binary Tree from Preorder and Inorder Traversal
+
+描述
+
+Given preorder and inorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+
+分析
+
+比如树
+      1
+  2       3
+4   5   6
+preorder 1,2,4,5,3,6
+inorder  4,2,5,1,6,3
+preorder的第一个元素就是inorder的parent，然后把inorder分为left子树和right子树，向下递归
+left子树有4,2,5所以left子树的preorder范围是从parent的start开始向右边数三个。右边剩下的都是right子树的preorder范围了。
+
+找到pivot的循环时间复杂度是O(n)，n个结点都需要被当做pivot找出，所以时间复杂度是O(n^2)。
+
+时间复杂度O(n^2)，空间复杂度O(h)，h是树的高度。
+
+public class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if(preorder == null || preorder.length == 0 || inorder == null 
+            || inorder.length == 0 || preorder.length != inorder.length) {
+            return null;
+        }
+
+        return build(preorder, 0, preorder.length-1, inorder, 0, inorder.length-1);
+    }
+    
+    private TreeNode build(int[] preorder, int pStart, int pEnd, int[] inorder, int iStart, int iEnd) {
+        if(pStart>pEnd || iStart>iEnd) {
+            return null;
+        }
+
+        int iPivot = 0;
+        for(int i=iStart; i<=iEnd; i++) {
+            if(inorder[i] == preorder[pStart]) {
+                iPivot = i;
+                break;
+            }
+        }
+
+        TreeNode p = new TreeNode(inorder[iPivot]);
+
+        p.left = build(preorder, pStart+1, pStart+(iPivot-iStart), inorder, iStart, iPivot-1);
+        p.right = build(preorder, pStart+(iPivot-iStart)+1, pEnd, inorder, iPivot+1, iEnd);
+        return p;
+    }
+}
