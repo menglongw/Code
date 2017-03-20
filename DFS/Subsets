@@ -23,14 +23,13 @@ If nums = [1,2,3], a solution is:
 
 分析
 
+没有重复数字，不需要排序
 递归，深度优先
 
 代码
 
 public class Solution {
     public List<List<Integer>> subsets(int[] nums) {
-        Arrays.sort(nums);  // 必须排序
-
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> path = new ArrayList<>();
 
