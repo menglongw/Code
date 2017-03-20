@@ -29,6 +29,8 @@ f(i,j)=min{f(i+1,j),f(i+1,j+1)}+(i,j)
 时间复杂度O(n^2)，空间复杂度O(n)，如果不多创建一个数组而利用原始list存储运算结果
 那么空间复杂度变为O(1)，但这样原始list被改变。
 
+代码
+
 public class Solution {
     public int minimumTotal(List<List<Integer>> triangle) {
         // 其实也就是triangle.get(triangle.size()-1).size()，因为行数等于最大列数
