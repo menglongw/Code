@@ -1,0 +1,55 @@
+Triangle
+
+描述
+
+Given a triangle, find the minimum path sum from top to bottom. 
+Each step you may move to adjacent numbers on the row below.
+
+For example, given the following triangle
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+The minimum path sum from top to bottom is 11 (i.e., 2 + 3 + 5 + 1 = 11).
+
+Note:
+Bonus point if you are able to do this using only O(n) extra space, 
+where n is the total number of rows in the triangle.
+
+分析
+
+dp问题，从底往上更好处理，因为这样结果集不断缩小，从上往下则是不断扩大。
+题目说了当前行的列i只能和下一行相邻元素（即下一行的列i和列i+1）求和。
+
+状态转移方程
+f(i,j)=min{f(i+1,j),f(i+1,j+1)}+(i,j)
+
+时间复杂度O(n^2)，空间复杂度O(n)，如果不多创建一个数组而利用原始list存储运算结果
+那么空间复杂度变为O(1)，但这样原始list被改变。
+
+public class Solution {
+    public int minimumTotal(List<List<Integer>> triangle) {
+        // 其实也就是triangle.get(triangle.size()-1).size()，因为行数等于最大列数
+        int maxLen = triangle.size();
+        int[] total = new int[maxLen];
+        int lastRow = maxLen-1;
+        
+        // total[i]代表从bottom往上算，截止到当前行第i列路径上最小的sum
+        // total初始值为最后一行各列的值
+        for(int i=0; i<maxLen; i++) {
+            total[i] = triangle.get(lastRow).get(i);
+        }
+        
+        for(int i=maxLen-2; i>=0; i--) {// start from the second last row
+            List<Integer> list = triangle.get(i);
+            
+            for(int k=0; k<list.size(); k++) {
+                total[k] = list.get(k) + Math.min(total[k], total[k+1]);
+            }
+        }
+        
+        return total[0];
+    }
+}
