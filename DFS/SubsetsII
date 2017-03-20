@@ -18,7 +18,6 @@ If nums = [1,2,2], a solution is:
   []
 ]
 
-
 分析
 
 排序去重
