@@ -1,0 +1,61 @@
+Longest Increasing Subsequence
+
+描述
+
+Given an unsorted array of integers, find the length of longest increasing subsequence.
+
+For example,
+Given [10, 9, 2, 5, 3, 7, 101, 18],
+The longest increasing subsequence is [2, 3, 7, 101], therefore the length is 4. Note that there may be more than one LIS combination, it is only necessary for you to return the length.
+
+Your algorithm should run in O(n2) complexity.
+
+Follow up: Could you improve it to O(n log n) time complexity?
+
+分析
+
+解法1：动态规划
+
+这是一个多阶段决策问题，求最长，是一个最优化问题，用BFS, 贪心或DP。
+如果用BFS，首先用数组中的所有元素作为根节点，形成n颗树，每棵树开始往下扩展，出现逆序则终止，最后计算每棵树的高度，取最大，就是最终结果。算法复杂度为O(n!)。
+本题中，一个节点往下扩展的时候，没有一个确定的准则，让你走哪些边，本题不具有贪心选择性质，因此不能用贪心法。
+我们来尝试用DP来解决这题。最重要的是要定义出状态。首先从状态扩展这方面看，对于数组中的一个元素，它往后走，凡是比它大的元素，都可以作为下一步，因此这里找不到突破口。
+我们换一个角度，从结果来入手，我们要求的最长递增子序列，一个递增子序列，肯定是有首尾两个端点的，假设我们定义 f[i] 为以第i个元素为起点的最长递增子序列，那么 f[i]和f[j]之间没有必然联系，这个状态不好用。
+假设定义f[i]为以第i个元素为终点的最长递增子序列，那么如果i<j且nums[i]<nums[j]，则f[i]一定是f[j]的前缀。这个状态能表示子问题之间的关系，可以接着深入下去。
+现在正式开始定义，我们定义状态f[i]为第i个元素为终点的最长递增子序列的长度，那么状态转移方程是
+f[j] = max{f[j],f[i]+1}, 0 <= i < j && f[i] < f[j]
+
+时间复杂度O(n^2)，空间复杂度O(n)
+
+解法2：？
+
+代码
+
+方法1：动态规划
+
+public class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0)
+            return 0;
+
+        // f[i]表示以i结尾的最长递增子序列的长度
+        int[] f = new int[nums.length];
+        Arrays.fill(f, 1);
+        int global = 1;
+
+        for (int j = 1; j < nums.length; ++j) {
+            for (int i = 0; i < j; ++i) {
+                if (nums[i] < nums[j]) {
+                    f[j] = Math.max(f[j], f[i] + 1);
+                }
+            }
+
+            global = Math.max(global, f[j]);
+        }
+
+        return global;
+    }
+}
+
+方法2：？
+
