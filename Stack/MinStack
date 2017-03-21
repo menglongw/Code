@@ -1,0 +1,53 @@
+Min Stack
+
+描述
+
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+getMin() -- Retrieve the minimum element in the stack.
+Example:
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --> Returns -3.
+minStack.pop();
+minStack.top();      --> Returns 0.
+minStack.getMin();   --> Returns -2.
+
+分析
+
+用两个栈，一个是真实的栈，另一个作为辅助栈，辅助栈每次 push 时，会把新元素跟当前栈顶元素进行比较，存入二者中较小的那个。
+举个例子，对于序列 18, 19, 21, 15, 17, 两个栈依次push进去的元素是这样的：
+真实栈，18, 19, 21, 15, 17
+辅助栈，18, 18, 18, 15, 15
+
+代码
+
+class MinStack {
+    
+    private Stack<Integer> s = new Stack<>();
+    private Stack<Integer> minStack = new Stack<>();
+
+    public void push(int x) {
+        s.push(x);
+        int minValue = minStack.isEmpty() ? x : Math.min(minStack.peek(), x);
+        minStack.push(minValue);
+    }
+
+    public void pop() {
+        minStack.pop();
+        s.pop();
+    }
+
+    public int top() {
+        return s.peek();
+    }
+
+    public int getMin() {
+        return minStack.peek();
+    }
+}
