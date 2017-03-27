@@ -1,0 +1,50 @@
+Reverse Linked List II
+
+描述
+
+Reverse a linked list from position m to n. Do it in-place and in one-pass.
+
+For example:
+Given 1->2->3->4->5->NULL, m = 2 and n = 4,
+
+return 1->4->3->2->5->NULL.
+
+Note:
+Given m, n satisfy the following condition:
+1 ≤ m ≤ n ≤ length of list.
+
+分析
+
+p1指向m的前一个结点，把m和n之间的结点一个一个的放到p1后面即可。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if(head == null || head.next == null || m == n) {
+            return head;
+        }
+        
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        
+        ListNode p1 = dummy;
+        for(int i=1; i<m; i++) {
+            p1 = p1.next;
+        }
+
+        ListNode p2 = p1.next;
+        ListNode current = p2.next;
+        
+        for(int i=m; i<n; i++) {
+            p2.next = current.next;
+            current.next = p1.next;
+            p1.next = current;
+            current = p2.next;
+        }
+        
+        return dummy.next;
+    }
+}
