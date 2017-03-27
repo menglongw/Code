@@ -10,7 +10,7 @@ Given 1->1->2->3->3, return 1->2->3.
 
 分析
 
-此题不用dummy node，dummy node的val如果跟后面的结点的val一样也是麻烦，不好处理。
+此题不用dummy node，dummy node的val如果跟后面的结点的val一样也是麻烦，不好处理。也可以用dummy node，只要val和head的不同即可。
 
 时间复杂度O(n)，空间复杂度O(1)
 
