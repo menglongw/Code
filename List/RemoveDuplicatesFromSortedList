@@ -1,0 +1,39 @@
+Remove Duplicates from Sorted List
+
+描述
+
+Given a sorted linked list, delete all duplicates such that each element appear only once.
+
+For example,
+Given 1->1->2, return 1->2.
+Given 1->1->2->3->3, return 1->2->3.
+
+分析
+
+此题不用dummy node，dummy node的val如果跟后面的结点的val一样也是麻烦，不好处理。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+        
+        ListNode start = head;
+        ListNode current = start.next;
+        
+        while(current != null) {
+            if(start.val == current.val)
+                start.next = current.next;
+            else
+                start = start.next;
+
+            current = start.next;
+        }
+        
+        return head;
+    }
+}
