@@ -1,0 +1,51 @@
+Remove Duplicates from Sorted List II
+
+描述
+
+Given a sorted linked list, delete all nodes that have duplicate numbers, leaving only distinct numbers
+from the original list.
+
+For example,
+Given 1->2->3->3->4->4->5, return 1->2->5.
+Given 1->1->1->2->3, return 2->3.
+
+分析
+
+prev指向前一个值不相等的结点，current为当前结点。不断比较current与current.next直到不相等。
+如果曾经出现过duplicate则旁路所有与duplicate值相等的结点。否则prev变成current后继续。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+        
+        // 此算法假设prev.val != current.val，所以即便head.val和dummy.val相等也没关系，head不会被删除
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode prev = dummy;
+        ListNode current = prev.next;
+        boolean duplicate = false;
+        
+        while(current != null) {
+            if(current.next != null && current.val == current.next.val) {
+                current = current.next;
+                duplicate = true;
+            } else {
+                if(duplicate)
+                    prev.next = current.next;
+                else
+                    prev = current;
+                
+                current = prev.next;
+                duplicate = false;
+            }
+        }
+        
+        return dummy.next;
+    }
+}
