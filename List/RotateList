@@ -1,0 +1,44 @@
+Rotate List
+
+描述
+
+Given a list, rotate the list to the right by k places, where k is non-negative.
+
+For example:
+Given 1->2->3->4->5->NULL and k = 2,
+return 4->5->1->2->3->NULL.
+
+分析
+
+首尾相连，然后到原来len - (k % len)处把环断开，断口处右边的第一个节点就是新的头结点。
+
+时间复杂度O(n)，空间复杂度O(1)
+ 
+public class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null || k == 0)
+            return head;
+        
+        int len = 1;
+        ListNode p = head;
+
+        while(p.next != null) {
+            len++;
+            p = p.next;
+        }
+        
+        // 首尾相连
+        p.next = head;
+        k = len - (k % len);
+        
+        for(int i=0; i<k; i++) {
+            p = p.next;
+        }
+        
+        // 新的头结点
+        head = p.next;
+        // 断开环
+        p.next = null;
+        return head;
+    }
+}
