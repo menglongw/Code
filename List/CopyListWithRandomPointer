@@ -9,7 +9,7 @@ Return a deep copy of the list.
 
 分析
 
-哈希表(两次遍历)
+解法1：哈希表(两次遍历)
 
 首先得弄懂深拷贝的含义，深拷贝可不是我们平时见到的对基本类型的变量赋值那么简单，深拷贝常常用于对象的克隆。这道题要求深度拷贝一个
 带有 random 指针的链表，random 可能指向空，也可能指向链表中的任意一个节点。
@@ -36,7 +36,27 @@ hash table，以旧结点为 key，新节点为 value。这么做的目的是为
 
 时间复杂度O(n)，空间复杂度O(n)
 
+解法2：
+
+|------------|
+|            v
+1  --> 2 --> 3 --> 4
+
+把新的结点加到对应的旧结点后面，如果旧结点的random不是null的话，新结点的random就是旧结点的random的下一个结点。
+
+|--------------------------|
+|                          v
+1  --> 1' --> 2 --> 2' --> 3 --> 3' --> 4 --> 4'
+       |                         ^
+       |-------------------------|
+       
+将链表拆为两个链表，返回新链表，同时也不改变旧链表。
+
+时间复杂度O(n)，空间复杂度O(1)
+
 代码
+
+方法1：
 
 public class Solution {
     public RandomListNode copyRandomList(RandomListNode head) {
@@ -69,5 +89,44 @@ public class Solution {
         }
         
         return newHead;
+    }
+}
+
+方法2：
+
+public class Solution {
+    public RandomListNode copyRandomList(RandomListNode head) {
+        if(head == null)
+            return head;
+            
+        RandomListNode p = head;
+        // 把新的结点加到对应的旧结点后面
+        while(p != null) {
+            RandomListNode newNode = new RandomListNode(p.label);
+            newNode.next = p.next;
+            p.next = newNode;
+            p = newNode.next;
+        }
+        
+        p = head;
+        // 如果旧结点的random不是null的话，新结点的random就是旧结点的random的下一个结点。
+        while(p != null) {
+            if(p.random != null)
+                p.next.random = p.random.next;
+            p = p.next.next;
+        }
+        
+        RandomListNode dummy = new RandomListNode(0);
+        RandomListNode current = dummy;
+        p = head;
+        // 将链表拆为两个链表，返回新链表，同时也不改变旧链表。
+        while(p != null) {
+            current.next = p.next;
+            current = current.next;
+            p.next = p.next.next;
+            p = p.next;
+        }
+        
+        return dummy.next;
     }
 }
