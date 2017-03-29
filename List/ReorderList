@@ -32,6 +32,7 @@ public class Solution {
         merge(head, head2);
     }
     
+    // 如果有奇数个结点，中间结点是第一个链表的最后一个结点
     private ListNode findMid(ListNode head) {
         ListNode dummy = new ListNode(0);
         dummy.next = head;
