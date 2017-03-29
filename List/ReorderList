@@ -1,0 +1,80 @@
+Reorder List
+
+描述
+
+Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+
+You must do this in-place without altering the nodes' values.
+
+For example,
+Given {1,2,3,4}, reorder it to {1,4,2,3}.
+
+分析
+
+题目规定要in-place，也就是说只能使用O(1)的空间。
+可以找到中间节点，断开，把后半截单链表reverse一下，再合并两个单链表。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public void reorderList(ListNode head) {
+        if(head == null || head.next == null || head.next.next == null)
+            return;
+        
+        ListNode mid = findMid(head);
+        ListNode head2 = mid.next;
+        // split the single list to two lists
+        mid.next = null;
+        head2 = reverse(head2);
+        merge(head, head2);
+    }
+    
+    private ListNode findMid(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode p1 = dummy;
+        ListNode p2 = dummy;
+
+        while(p2 != null) {
+            p1 = p1.next;
+            p2 = p2.next;
+            if(p2 == null)
+                break;
+            p2 = p2.next;
+        }
+        
+        return p1;
+    }
+    
+    private ListNode reverse(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode current = head.next;
+        
+        while(current != null) {
+            head.next = current.next;
+            current.next = dummy.next;
+            dummy.next = current;
+            current = head.next;
+        }
+        
+        return dummy.next;
+    }
+    
+    private void merge(ListNode head, ListNode head2) {
+        ListNode p1 = head;
+        ListNode p2 = head2;
+        ListNode temp = null;
+        
+        while(p2 != null) {
+            temp = p2.next;
+            p2.next = p1.next;
+            p1.next = p2;
+            p1 = p2.next;
+            p2 = temp;
+        }
+    }
+}
