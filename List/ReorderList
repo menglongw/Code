@@ -21,7 +21,7 @@ Given {1,2,3,4}, reorder it to {1,4,2,3}.
 
 public class Solution {
     public void reorderList(ListNode head) {
-        if(head == null || head.next == null || head.next.next == null)
+        if(head == null || head.next == null)
             return;
         
         ListNode mid = findMid(head);
@@ -52,6 +52,9 @@ public class Solution {
     }
     
     private ListNode reverse(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+
         ListNode dummy = new ListNode(0);
         dummy.next = head;
         ListNode current = head.next;
