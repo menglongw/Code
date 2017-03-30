@@ -1,0 +1,79 @@
+Palindrome Linked List
+
+描述
+
+Given a singly linked list, determine if it is a palindrome.
+
+Follow up:
+Could you do it in O(n) time and O(1) space?
+
+分析
+
+找到中间结点将原链表分为两个链表，比较每一个结点的值，如果都相等即使回文链表。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public boolean isPalindrome(ListNode head) {
+        if(head == null || head.next == null)
+            return true;
+
+        ListNode mid = findMid(head);
+        ListNode head2 = mid.next;
+        mid.next = null;
+        
+        ListNode p1 = head;
+        ListNode p2 = reverse(head2);
+        
+        // 原始链表有奇数个结点时，第二个链表比第一个链表少一个结点
+        // 所以p2 == null就不用比较了，剩的中间结点不影响结果
+        while(p2 != null) {
+            if(p1.val != p2.val)
+                return false;
+            
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        return true;
+    }
+    
+    // 如果有奇数个结点，中间结点是第一个链表的最后一个结点
+    // 如果有偶数个结点，比如4个结点，这里第2个结点是第一个链表的最后一个结点
+    private ListNode findMid(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode p1 = dummy;
+        ListNode p2 = dummy;
+        
+        while(p2 != null) {
+            p2 = p2.next;
+            if(p2 == null)
+                break;
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        return p1;
+    }
+    
+    private ListNode reverse(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode current = head.next;
+        
+        while(current != null) {
+            head.next = current.next;
+            current.next = dummy.next;
+            dummy.next = current;
+            current = head.next;
+        }
+        
+        return dummy.next;
+    }
+}
