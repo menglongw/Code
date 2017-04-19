@@ -42,36 +42,28 @@ public class Solution {
         
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.offer(root);
-        // 当前层的结点数
-        int currentCount = 1;
         boolean leftToRight = false;
         
         while(!queue.isEmpty()) {
-            // 下一层的结点数
-            int nextCount = 0;
+            // 本层结点数
+            int size = queue.size();
             List<Integer> values = new ArrayList<Integer>();
 
             // 遍历树的一层的所有结点
-            while(currentCount > 0) {
+            for(int i=0; i<size; i++) {
                 TreeNode node = queue.poll();
                 values.add(node.val);
-                currentCount--;
                 
-                if(node.left != null) {
+                if(node.left != null)
                     queue.offer(node.left);
-                    nextCount++;
-                }
                 
-                if(node.right != null) {
+                if(node.right != null)
                     queue.offer(node.right);
-                    nextCount++;
-                }
             }
             
             // 相邻行顺序相反
-            leftToRight = leftToRight ? false:true;
+            leftToRight = leftToRight ? false : true;
             result.add(getValues(values, leftToRight));
-            currentCount = nextCount;
         }
         
         return result;
