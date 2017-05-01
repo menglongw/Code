@@ -1,0 +1,63 @@
+Spiral Matrix II
+
+描述
+
+Given an integer n, generate a square matrix filled with elements from 1 to n2 in spiral order.
+
+For example,
+Given n = 3,
+
+You should return the following matrix:
+[
+ [ 1, 2, 3 ],
+ [ 8, 9, 4 ],
+ [ 7, 6, 5 ]
+]
+
+分析
+
+四个方向的墙可以用元素是否是0和是否超出matrix边界来判断
+
+时间复杂度O(n^2)，空间复杂度O(n^2)
+
+代码
+
+public class Solution {
+    public int[][] generateMatrix(int n) {
+        int[][] matrix = new int[n][n];
+        build(matrix, 0, 0);
+        return matrix;
+    }
+    
+    private void build(int[][] matrix, int row, int col) {
+        int len = matrix.length;
+        int count = 0;
+        
+        while(count<len*len) {
+            matrix[row][col] = ++count;
+            
+            // 不能超过数组边界，如果已被赋值则改变方向
+            while(col+1<len && matrix[row][col+1] == 0) {
+                col++;
+                matrix[row][col] = ++count;
+            }
+            
+            while(row+1<len && matrix[row+1][col] == 0) {
+                row++;
+                matrix[row][col] = ++count;
+            }
+            
+            while(col>0 && matrix[row][col-1] == 0) {
+                col--;
+                matrix[row][col] = ++count;
+            }
+            
+            while(row>0 && matrix[row-1][col] == 0) {
+                row--;
+                matrix[row][col] = ++count;
+            }
+            
+            col += 1;
+        }
+    }
+}
