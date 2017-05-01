@@ -1,0 +1,90 @@
+Minimum Window Substring
+
+描述
+
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+
+For example,
+S = "ADOBECODEBANC"
+T = "ABC"
+Minimum window is "BANC".
+
+Note:
+If there is no such window in S that covers all characters in T, return the empty string "".
+
+If there are multiple such windows, you are guaranteed that there will always be only one unique minimum window in S.
+
+分析
+
+将最左边作为子字符串起点，右移指针检查当前字符计数是否和t中的相同，比t中计数小则加1，当所有字符计数和与t的长度
+相同时说明此子字符串包含t中所有字符，然后把子字符串前面不必要的字符去掉就是想要的一个子字符串。
+将当前指针的下一个位置作为新子字符串的起始位置重复上面步骤，找到所有可能的子字符串，返回最短的。
+如果一个符合条件的子字符串都没有返回空串。
+
+时间复杂度O(n)，空间复杂度O(n+m)
+
+代码
+
+public class Solution {
+    public String minWindow(String s, String t) {
+        String result = "";
+
+        if(t.length()>s.length()) 
+            return result;
+     
+        //character counter for t
+        HashMap<Character, Integer> target = new HashMap<Character, Integer>();
+        for(int i=0; i<t.length(); i++) {
+            char c = t.charAt(i);    
+            if(target.containsKey(c)) {
+                target.put(c,target.get(c)+1);
+            } else {
+                target.put(c,1);  
+            }
+        }
+     
+        // character counter for s
+        HashMap<Character, Integer> source = new HashMap<Character, Integer>();
+        int left = 0;
+        int minLen = s.length()+1;
+     
+        int count = 0; // the total of mapped characters
+     
+        // left是当前子字符串的起始字符在s中位置，i为当前字符在s中的位置
+        for(int i=0; i<s.length(); i++) {
+            char c = s.charAt(i);
+     
+            if(target.containsKey(c)) {
+                if(source.containsKey(c)) {
+                    if(source.get(c)<target.get(c)) {
+                        count++;
+                    }
+                    source.put(c,source.get(c)+1);
+                } else {
+                    source.put(c,1);
+                    count++;
+                }
+            }
+     
+            if(count == t.length()) {
+                char sc = s.charAt(left);
+                // s="aaaaab"，t="ab"，此时left=0，i=5，需要把前面的一堆a都跳过
+                // 所以left不断右移，map中a的计数不断减小
+                while(!source.containsKey(sc) || source.get(sc) > target.get(sc)) {
+                    if(source.containsKey(sc) && source.get(sc) > target.get(sc))
+                        source.put(sc, source.get(sc) - 1);
+
+                    left++;
+                    sc = s.charAt(left);
+                }
+     
+                if(i - left + 1 < minLen) {
+                    result = s.substring(left, i + 1);
+                    minLen = i - left + 1;
+                }
+            }
+        }
+     
+        return result;
+    }
+}
