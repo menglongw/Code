@@ -1,0 +1,88 @@
+Spiral Matrix
+
+描述
+
+Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
+
+For example,
+Given the following matrix:
+
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+
+You should return [1,2,3,6,9,8,7,4,5].
+
+分析
+
+每一圈从左上角开始，往右往下往左网上转一圈，然后找新一圈的起点开始新德一圈。
+每次碰墙就改变方向，并更新墙的位置。
+如果上墙和下墙相连或左墙和右墙相连则说明没有空隙了，即没有元素需要再访问，此时结束。
+
+墙最开始是matrix外面一圈，leftWall=-1，rightWall=matrix[0].length，topWall=-1，bottomWall=matrix.length
+
+时间复杂度O(n*m)，空间复杂度(1)
+
+代码
+
+public class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> result = new ArrayList<>();
+        
+        if(matrix == null || matrix.length == 0)
+            return result;
+        
+        visit(result, matrix, 0, 0, -1, matrix[0].length, -1, matrix.length);
+        return result;
+    }
+    
+    private void visit(List<Integer> result, int[][] matrix, int row, int col, int leftWall, int rightWall, int topWall, int bottomWall) {
+        
+        while(true) {
+            //把本圈的起点加上
+            result.add(matrix[row][col]);
+            
+            // move right
+            while(col+1 < rightWall) {
+                col++;
+                result.add(matrix[row][col]);
+            }
+            topWall++;
+            if(topWall+1 == bottomWall)
+                break;
+        
+            // move down
+            while(row+1 < bottomWall) {
+                row++;
+                result.add(matrix[row][col]);
+            }
+            rightWall--;
+            if(leftWall+1 == rightWall)
+                break;
+        
+            // move left
+            while(col-1 > leftWall) {
+                col--;
+                result.add(matrix[row][col]);
+            }
+            bottomWall--;
+            if(topWall+1 == bottomWall)
+                break;
+        
+            // move up
+            while(row-1 > topWall) {
+                row--;
+                result.add(matrix[row][col]);
+            }
+            leftWall++;
+            if(leftWall+1 == rightWall)
+                break;
+
+            //开始新的一圈时，起点是上次终点右边一个位置。
+            col += 1;
+        }
+    }
+}
+
