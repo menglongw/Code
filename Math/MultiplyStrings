@@ -1,0 +1,59 @@
+Multiply Strings
+
+描述
+
+Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2.
+
+Note:
+
+The length of both num1 and num2 is < 110.
+Both num1 and num2 contains only digits 0-9.
+Both num1 and num2 does not contain any leading zero.
+You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+分析
+
+此题考查两个大整数超过long范围如何做乘法。
+把num1和num2看成两个字符数组，把num1[i]和nums[k]相乘的结果存入nums[i+k]。
+num1[num1.length-1]和num2[num2.length-1]的乘机存入nums[num1.length-1+num2.length-1],index是num1.length+num2.length-2，
+所以nums的长度为num1.length+num2.length-1。此外如果num1[0]和num2[0]的乘积和进位相加产生进位，则需要nums数组以外多一位来
+存储着一位，所以结果位数最多为1+nums.length。
+得到的结果需要把前导零都去掉。
+
+时间复杂度O(n*m)，空间复杂度O(n+m)
+
+代码
+
+public class Solution {
+    public String multiply(String num1, String num2) {
+        int[] nums = new int[num1.length() + num2.length() - 1];
+        
+        for(int i=num1.length()-1; i>=0; i--) {
+            int n1 = num1.charAt(i) - '0';
+            
+            for(int k=num2.length()-1; k>=0; k--) {
+                int n2 = num2.charAt(k) - '0';
+                nums[i+k] += n1 * n2;
+            }
+        }
+        
+        StringBuilder builder = new StringBuilder();
+
+        for(int i=nums.length-1; i>= 0; i--) {
+            builder.insert(0, nums[i] % 10);
+            
+            if(i == 0) {
+                builder.insert(0, nums[i] / 10);
+                break;
+            }
+            
+            nums[i-1] += nums[i] / 10;
+        }
+        
+        while(builder.charAt(0) == '0' && builder.length()>1) {
+            builder.deleteCharAt(0);
+        }
+        
+        return builder.toString();
+    }
+}
