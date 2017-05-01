@@ -1,0 +1,75 @@
+Insert Interval
+
+描述
+
+Given a set of non-overlapping intervals, insert a new interval into the intervals (merge if necessary).
+
+You may assume that the intervals were initially sorted according to their start times.
+
+Example 1:
+Given intervals [1,3],[6,9], insert and merge [2,5] in as [1,5],[6,9].
+
+Example 2:
+Given [1,2],[3,5],[6,7],[8,10],[12,16], insert and merge [4,9] in as [1,2],[3,10],[12,16].
+
+This is because the new interval [4,9] overlaps with [3,5],[6,7],[8,10].
+
+分析
+
+重合判断起来复杂，但是不重合很好判断
+1. newInterval在currentInterval左边，什么也不做并且后面的都不用看了，更不可能重合
+2. newInterval在currentInterval右边，跳过currentInterval，继续处理后面的，没有有重合
+3. newInterval和currentInterval有重叠，跟新newInterval的start为二者start最小者
+，end为二者end最大者，即取最大范围更新newInterval，并从list中删除有重叠的currentInterval
+
+最后把newInterval插入到当前位置，返回list
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+/**
+ * Definition for an interval.
+ * public class Interval {
+ *     int start;
+ *     int end;
+ *     Interval() { start = 0; end = 0; }
+ *     Interval(int s, int e) { start = s; end = e; }
+ * }
+ */
+ 
+ public class Solution {
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+        if(intervals == null || intervals.isEmpty()) {
+            List<Interval> r = new ArrayList<>();
+            r.add(newInterval);
+            return r;
+        }
+        
+        int i = 0;
+
+        while(i < intervals.size()) {
+            Interval c = intervals.get(i);
+
+            if(newInterval.end < c.start) {
+                // 不重合，并且已经merge过了
+                break;
+            } else if(newInterval.start > c.end) {
+                // 不重合，继续检查下一个interval
+                i++;
+            } else {
+                // 重合，更新原始的newInterval，然后删除当前的interval
+                // 因为当前的interval会被更新过得newInterval替代，之所以
+                // 不立即插入更新过得newInterval是因为newInterval还可能被
+                // 之后的interval更新，这是一个不断merge的过程，merge过程
+                // 结束后统一插入最新的newInterval
+                newInterval.start = Math.min(c.start, newInterval.start);
+                newInterval.end = Math.max(c.end, newInterval.end);
+                intervals.remove(i);
+            }
+        }
+
+        intervals.add(i, newInterval);
+        return intervals;
+    }
+}
