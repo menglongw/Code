@@ -1,0 +1,82 @@
+ZigZag Conversion
+
+描述
+
+The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this:
+(you may want to display this pattern in a fixed font for better legibility)
+
+P   A   H   N
+A P L S I I G
+Y   I   R
+And then read line by line: "PAHNAPLSIIGYIR"
+Write the code that will take a string and make this conversion given a number of rows:
+
+string convert(string text, int nRows);
+convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
+
+分析
+
+以PAYP为一个单元，第二个单元为ALIS，以此类推。
+第一行，每个单元包含一个字符，每个字符相差n个字符，其中n=2*rows-2。
+最后一行，每个单元包含一个字符，每个字符也相差n个字符。
+中间几行，每个单元包含两个字符.第一个单元的第一个字符与第二个字符。
+每个单元第一个字符之间相差n个字符，每个单元第二个字符之间相差n个字符。
+第一个单元内中间行的第一个字符的位置a与第二个字符的位置b之和为n。
+另外如果row为1则返回原字符串，如果字符串长度小于row则返回原字符串。
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public String convert(String s, int numRows) {
+        if(s == null || numRows<0)
+            return "";
+        else if(numRows == 1 || s.length()<numRows)
+            return s;
+        
+        StringBuilder buffer = new StringBuilder();
+        int n = 2*numRows-2;
+        
+        int p1 = 0;
+        int p2 = 0;
+        
+        for(int i=0; i<numRows; i++) {
+
+            if(i == 0) {
+                // first row
+                p1 = i;
+                
+                while(p1<s.length()) {
+                    buffer.append(s.charAt(p1));
+                    p1 = p1 + n;
+                }
+            } else if(i == numRows-1) {
+                // last row
+                p1 = i;
+                
+                while(p1<s.length()) {
+                    buffer.append(s.charAt(p1));
+                    p1 = p1 + n;
+                }
+            } else {
+                // middle rows
+                p1 = i;
+                p2 = n - p1;
+                
+                while(p1<s.length()) {
+                    buffer.append(s.charAt(p1));
+                    
+                    if(p2<s.length()) {
+                        buffer.append(s.charAt(p2));
+                    }
+                    
+                    p1 = p1 + n;
+                    p2 = p2 + n;
+                }
+            }
+        }
+        
+        return buffer.toString();
+    }
+}
