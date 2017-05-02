@@ -1,0 +1,51 @@
+Search a 2D Matrix
+
+描述
+
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+
+Integers in each row are sorted from left to right.
+The first integer of each row is greater than the last integer of the previous row.
+For example,
+
+Consider the following matrix:
+
+[
+  [1,   3,  5,  7],
+  [10, 11, 16, 20],
+  [23, 30, 34, 50]
+]
+Given target = 3, return true.
+
+分析
+
+二分法查找，将2D数组每一行看做首位相连，这样组成一个一维有序数组。
+需要一个方法输入一维有序数组的一个index，求出在2D数组中对应的行列，从而求得2D数组相应位置的值。
+
+时间复杂度O(logn)，空间复杂度O(1)
+
+代码
+ 
+public class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if(matrix == null || matrix.length == 0)
+            return false;
+        
+        int l = 0;
+        int h = matrix.length * matrix[0].length - 1;
+        
+        while(l <= h) {
+            int mid = l + (h - l)/2;
+            int value = matrix[mid / matrix[0].length][mid % matrix[0].length];
+
+            if(value == target)
+                return true;
+            else if(value > target)
+                h = mid-1;
+            else
+                l = mid+1;
+        }
+        
+        return false;
+    }
+}
