@@ -1,0 +1,68 @@
+Max Points on a Line
+
+描述
+
+Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+
+分析
+
+以每个点为中心，然后遍历剩余点，找到所有的斜率，如果斜率相同，那么一定共线。对每个点，用一个哈希表，key为斜率，value为该直线上的点数，计算出哈希表后，取最大值，并更新全局最大值，最后就是结果。
+计算斜率的时候不能除0（x轴位置相同），所以落在同一位置的不同点和落在同一竖线上的不同点要单独算。
+
+时间复杂度O(n^2)，空间复杂度O(n)
+
+代码
+
+/**
+ * Definition for a point.
+ * class Point {
+ *     int x;
+ *     int y;
+ *     Point() { x = 0; y = 0; }
+ *     Point(int a, int b) { x = a; y = b; }
+ * }
+ */
+public class Solution {
+    public int maxPoints(Point[] points) {
+        if(points == null || points.length == 0)
+            return 0;
+ 
+        Map<Double, Integer> result = new HashMap<>();
+        int max=0;
+     
+        for(int i=0; i<points.length; i++) {
+            int duplicate = 0;
+            int vertical = 0;
+
+            // 计算和当前点i共线的点，不包括i自己
+            for(int j=i+1; j<points.length; j++) {
+                //handle duplicates and vertical
+                if(points[i].x == points[j].x) {
+                    if(points[i].y == points[j].y)
+                        duplicate++;
+                    else
+                        vertical++;
+                } else {
+                    double slope = points[j].y == points[i].y ? 0.0 : (1.0 * (points[j].y - points[i].y)) / (points[j].x - points[i].x);
+     
+                    if(result.get(slope) != null)
+                        result.put(slope, result.get(slope) + 1);
+                    else
+                        result.put(slope, 1);
+                }
+            }
+     
+            for(Integer count: result.values()) {
+                // 1代表当前点i自己
+                max = Math.max(count+duplicate+1, max);
+            }
+
+            // 1代表当前点i自己
+            max = Math.max(vertical+duplicate+1, max);
+            result.clear();
+        }
+
+        return max;
+    }
+}
+
