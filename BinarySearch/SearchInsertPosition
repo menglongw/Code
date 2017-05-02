@@ -1,0 +1,52 @@
+Search Insert Position
+
+描述
+
+Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You may assume no duplicates in the array.
+
+Here are few examples.
+[1,3,5,6], 5 → 2
+[1,3,5,6], 2 → 1
+[1,3,5,6], 7 → 4
+[1,3,5,6], 0 → 0
+
+分析
+
+返回l还是h是关键，见代码注释的分析
+
+时间复杂度O(logn)，空间复杂度O(1)
+
+
+代码
+
+public class Solution {
+    public int searchInsert(int[] nums, int target) {
+        if(nums == null || nums.length == 0)
+            return 0;
+        
+        int l = 0;
+        int h = nums.length-1;
+        int mid = 0;
+        
+        while(l <= h) {
+            mid = l + (h-l)/2;
+            
+            if(target == nums[mid])
+                return mid;
+            else if(target > nums[mid])
+                l = mid+1;
+            else
+                h = mid-1;
+        }
+        
+        /*
+        为什么return l?
+        当l = mid = h时
+        1. 如果target < a[mid]，接着h=mid-1，然后h<l退出循环，此时未改变的l为所求。
+        2. 如果target > a[mid]，接l=mid+1，然后h<l退出循环，此时未改变的h为所求。
+        */
+        return l;
+    }
+}
