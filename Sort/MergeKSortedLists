@@ -1,0 +1,45 @@
+Merge k Sorted Lists
+
+描述
+
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+分析
+
+时间复杂度O(nklogk)，空间复杂度O(1)
+
+n是一个list的长度，有k个list
+
+代码
+
+public class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists == null || lists.length == 0)
+            return null;
+        
+        PriorityQueue<ListNode> queue = new PriorityQueue<>(lists.length, new Comparator<ListNode>() {
+            public int compare(ListNode a, ListNode b) {
+                return Integer.compare(a.val, b.val);
+            }
+            });
+            
+        for(ListNode node : lists) {
+            if(node != null)
+                queue.offer(node);
+        }
+        
+        ListNode dummy = new ListNode(0);
+        ListNode tail = dummy;
+        
+        while(queue.size() > 0) {
+            ListNode temp = queue.poll();
+            tail.next = temp;
+            tail = tail.next;
+
+            if(temp.next != null)
+                queue.offer(temp.next);
+        }
+        
+        return dummy.next;
+    }
+}
