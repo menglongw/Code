@@ -1,0 +1,39 @@
+Insertion Sort List
+
+描述
+
+Sort a linked list using insertion sort.
+
+分析
+
+建立一个排序用的结果链表，把原始链表中的结点不断放入结果链表的正确位置，每次处理原始链表结点时都需要从头遍历
+结果链表以插入结点到正确位置。任意时刻结果链表都是排好序的。
+
+时间复杂度：最坏O(n2)，最好O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public ListNode insertionSortList(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+            
+        // 这个dummy的作用是，把head开头的链表一个个的插入到dummy开头的链表里
+        // 所以这里不需要dummy.next = head;
+        ListNode dummy = new ListNode(0);
+
+        // head指针会不断向右移动
+        while (head != null) {
+            ListNode node = dummy;
+            while (node.next != null && node.next.val < head.val) {
+                node = node.next;
+            }
+            ListNode temp = head.next;
+            head.next = node.next;
+            node.next = head;
+            head = temp;
+        }
+
+        return dummy.next;
+    }
+}
