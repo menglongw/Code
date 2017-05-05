@@ -1,0 +1,71 @@
+Sort List
+
+描述
+
+Sort a linked list in O(n log n) time using constant space complexity.
+
+分析
+
+因为不是数组而是链表quick sort没有下标可以定位元素，每次要遍历链表找结点，比较慢。
+heap sort需要额外空间。
+merge sort正合适，可以用递归特性避免不能用下标定位的问题，也不需要额外空间。
+
+时间复杂度O(nlogn)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public ListNode sortList(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+        
+        ListNode mid = findMid(head);
+        ListNode head2 = mid.next;
+        mid.next = null;
+        
+        ListNode l1 = sortList(head);
+        ListNode l2 = sortList(head2);
+        
+        return merge(l1, l2);
+    }
+
+    private ListNode findMid(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+            
+        ListNode slow = head;
+        ListNode fast = head.next;
+        
+        while(fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        
+        return slow;
+    }
+    
+    private ListNode merge(ListNode l1, ListNode l2) {
+        if(l1 == null)
+            return l2;
+        else if(l2 == null)
+            return l1;
+            
+        ListNode dummy = new ListNode(0);
+        ListNode p = dummy;
+        
+        while(l1 != null && l2 != null) {
+            if(l1.val < l2.val) {
+                p.next = l1;
+                l1 = l1.next;
+            } else {
+                p.next = l2;
+                l2 = l2.next;
+            }
+            
+            p = p.next;  
+        }
+        
+        p.next = (l1 == null ? l2 : l1);
+        return dummy.next;
+    }
+}
