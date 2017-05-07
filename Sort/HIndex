@@ -23,6 +23,7 @@ Note: If there are several possible values for h, the maximum one is taken as th
 贪婪地增加文章数直到文章数大于引用数，返回前一个文章数（文章数减1），
 因为之前的都符合条件，前一个是最大值。
 
+时间复杂度O(nlogn)， 空间复杂度O(1)
 
 代码
 
