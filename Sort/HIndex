@@ -27,7 +27,7 @@ Note: If there are several possible values for h, the maximum one is taken as th
 代码
 
 public int hIndex1(int[] citations) {
-    // 先按升序排序
+    // 先按非降序排序
     Arrays.sort(citations);
     int len = citations.length;
 
