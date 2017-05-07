@@ -1,0 +1,48 @@
+H-Index
+
+描述
+
+Given an array of citations (each citation is a non-negative integer) of a researcher, write a
+function to compute the researcher's h-index.
+
+According to the definition of h-index on Wikipedia: "A scientist has index h if h of his/her N
+papers have at least h citations each, and the other N − h papers have no more than h citations
+each."
+
+For example, given citations = [3, 0, 6, 1, 5], which means the researcher has 5 papers in total 
+and each of them had received 3, 0, 6, 1, 5 citations respectively. Since the researcher has 3
+papers with at least 3 citations each and the remaining two with no more than 3 citations each, 
+his h-index is 3.
+
+Note: If there are several possible values for h, the maximum one is taken as the h-index.
+
+分析
+
+[6,5,1]一篇文章引用6次，两篇文章引用5次，三篇文章引用1次
+此时3（文章数）> 1（引用数），则文章数回退为2，即是结果。
+贪婪地增加文章数直到文章数大于引用数，返回前一个文章数（文章数减1），
+因为之前的都符合条件，前一个是最大值。
+
+
+代码
+
+public int hIndex1(int[] citations) {
+    // 先按升序排序
+    Arrays.sort(citations);
+    int len = citations.length;
+
+    for(int i=len-1; i>=0; i--) {
+        // len-i是从后往前数直到当前位置的文章数
+        if(len-i == citations[i]) {
+            return len-i;
+        } else if(len-i > citations[i]) {
+            // 此文章数多于引用数，所以citations[len-i]不是maximum，
+            // 由于上一个文章数对应的引用数大于文章数不符合条件才走到此处，
+            // 所以根据h-index定义，上一个文章数如果等于引用数就可以了
+            // 即len-i-1
+            return len-i-1;
+        }
+    }
+
+    return len;
+}
