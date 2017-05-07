@@ -1,0 +1,34 @@
+H-Index II
+
+描述
+
+Follow up for H-Index: What if the citations array is sorted in ascending order? 
+Could you optimize your algorithm?
+
+分析
+
+时间复杂度O(logn)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public int hIndex(int[] citations) {
+        int n = citations.length;
+        int l = 0;
+        int h = citations.length - 1;
+
+        while(l <= h) {
+            int mid = l + (h-l) / 2;
+
+            // n-mid是论文数
+            if(citations[mid] == n-mid)
+                return n-mid;
+            if (citations[mid] < n-mid)
+                l = mid+1;
+            else
+                h = mid-1;
+        }
+
+        return n-l;
+    }
+}
