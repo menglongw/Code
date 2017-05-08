@@ -1,0 +1,86 @@
+Word Ladder
+
+描述
+
+Given two words (beginWord and endWord), and a dictionary's word list, find the length of 
+shortest transformation sequence from beginWord to endWord, such that:
+
+Only one letter can be changed at a time.
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+For example,
+
+Given:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+return its length 5.
+
+Note:
+Return 0 if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+UPDATE (2017/1/20):
+The wordList parameter had been changed to a list of strings (instead of a set of strings). 
+Please reload the code definition to get the latest changes.
+
+分析
+
+类似于tree的level order traversal，把当前单词经过一个字符变化后能在字典里找到的所有单词放入
+queue，然后对queue里单词再找改变一个字符后的单词。每个level具有相同的len，如果找到返回len，
+否则循环结束返回0
+
+里面两层循环由于已知循环长度，所以是O(1)
+时间复杂度O(n)，空间复杂度?
+
+代码
+
+public class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordDict2) {
+        // 题目第三个参数以前是Set，现在改为List，如果大数据测试不断调用contains和remove方法
+        // 会超时，所以先转成HashSet再用
+        Set<String> wordDict = new HashSet<>(wordDict2);
+        // Each transformed word must exist in the word list.
+        // Note that beginWord is not a transformed word.
+        if(!wordDict.contains(endWord))
+            return 0;
+
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+        // 如果beginword可以改变一个字母变成endword，那么len为2，
+        // 可见len最小为2
+        int len = 2;
+ 
+        while(!queue.isEmpty()){
+            // 类似level order traversal，查看本层
+            int size = queue.size();
+            
+            for(int k=0; k<size; k++) {
+                String word = queue.poll();
+
+                // 当前单词每个字符分别用a-z替换然后查找字典中是否有匹配的单词
+                for(int i=0; i<beginWord.length(); i++){
+                    for(char c='a'; c<='z'; c++){
+                        StringBuilder newWord = new StringBuilder(word);
+                        newWord.setCharAt(i, c);
+
+                        if(endWord.equals(newWord.toString())) {
+                            return len;
+                        } else if(wordDict.contains(newWord.toString())){
+                            queue.add(newWord.toString());
+                            // 因为找最短路径，所以要把已经匹配的单词从字典中移除，避免以后
+                            // 从其他更长的路径匹配到此单词
+                            wordDict.remove(newWord.toString());
+                        }
+                    }
+                }
+            }
+            
+            len++;
+        }
+ 
+        return 0;
+    }
+}
