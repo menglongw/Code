@@ -1,0 +1,47 @@
+Largest Number
+
+描述
+
+Given a list of non negative integers, arrange them such that they form the largest number.
+
+For example, given [3, 30, 34, 5, 9], the largest formed number is 9534330.
+
+Note: The result may be very large, so you need to return a string instead of an integer.
+
+分析
+
+怎么知道两个字符串型的数字谁在前组成的数字比较大呢？只要比较x+y和y+x即可，
+这里需要把大的放在数组前面，所以是降序，需要一个负号，-(x+y).compareTo(y+x)
+
+时间复杂度O(nlogn)，因为排序了，空间复杂度O(n)
+
+代码
+
+public class Solution {
+    public String largestNumber(int[] nums) {
+        if(nums == null || nums.length == 0)
+            return "";
+            
+        String[] numbers = new String[nums.length];
+        for(int i=0; i<nums.length; i++) {
+            numbers[i] = String.valueOf(nums[i]);
+        }
+        
+        Arrays.sort(numbers, (String x, String y) -> {
+            // 降序
+            return -(x+y).compareTo(y+x);
+            });
+
+        StringBuilder builder = new StringBuilder();
+        for(String s : numbers) {
+            builder.append(s);
+        }
+        
+        // [0,0]返回"0"而不是"00"，也不能把0全去了变成""
+        while(builder.charAt(0) == '0' && builder.length() > 1) {
+            builder.deleteCharAt(0);
+        }
+        
+        return builder.toString();
+    }
+}
