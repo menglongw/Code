@@ -1,0 +1,61 @@
+Restore IP Addresses
+
+描述
+
+Given a string containing only digits, restore it by returning all possible valid IP address combinations.
+
+For example:
+Given "25525511135",
+
+return ["255.255.11.135", "255.255.111.35"]. (Order does not matter)
+
+分析
+
+时间复杂度？，空间复杂度？
+
+代码
+
+public class Solution {
+    public List<String> restoreIpAddresses(String s) {
+        List<String> result = new ArrayList<>();
+        
+        if(s == null || s.isEmpty() || s.length() < 4)
+            return result;
+        
+        dfs(result, "", s, 0, 0);
+        return result;
+    }
+    
+    private void dfs(List<String> result, String buffer, String s, int current, int partNum) {
+        
+        if(partNum == 4) {
+            //已经有四部分ip地址，但是s的digits还没用完
+            if(current<s.length())
+                return;
+
+            // remove the first '.'
+            result.add(buffer.substring(1));
+            return;
+        }
+        
+        for(int i=1; i<=3; i++) {
+            // s的digits不够用了
+            if(current+i > s.length())
+                return;
+            
+            String part = s.substring(current, current+i);
+
+            if(!valid(part))
+                return;
+            
+            dfs(result, buffer+"."+part, s, current+i, partNum+1);
+        }
+    }
+    
+    private boolean valid(String s) {
+        if(s == null || s.isEmpty() || (s.length()>1&&s.charAt(0)=='0') || s.length()>3 || Integer.parseInt(s)>255)
+            return false;
+        
+        return true;
+    }
+}
