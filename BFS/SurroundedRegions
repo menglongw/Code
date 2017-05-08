@@ -1,0 +1,121 @@
+Surrounded Regions
+
+描述
+
+Given a 2D board containing 'X' and 'O' (the letter O), capture all regions surrounded by 'X'.
+
+A region is captured by flipping all 'O's into 'X's in that surrounded region.
+
+For example,
+
+X X X X
+X O O X
+X X O X
+X O X X
+
+After running your function, the board should be:
+
+X X X X
+X X X X
+X X X X
+X O X X
+
+分析
+
+这题题意也略显含糊，实际上就是要将所有以O组成、但不连通到网格边缘的区域变为X。所以我们可以先在四边上寻找连通到边缘的
+区域，将它们的O都变成Y。剩余的所有O一定无法连通到边缘，所以可以全部变为X。最后再将所有Y变回O。
+dfs栈溢出，用bfs
+
+时间复杂度O(m*n)，空间复杂度O(m*n)
+
+代码
+
+public class Solution {
+    public void solve(char[][] board) {
+        if(board==null || board.length==0 || board[0].length==0)
+            return;
+ 
+        int m=board.length;
+        int n=board[0].length;
+     
+        // 和第一行连通的O变成Y
+        for(int j=0; j<n; j++){
+            if(board[0][j]=='O'){
+                bfs(board, 0, j);
+            }
+        }
+     
+        // 和最后一行连通的O变成Y
+        for(int j=0; j<n; j++){
+            if(board[m-1][j]=='O'){
+                bfs(board, m-1, j);
+            }
+        }
+     
+        // 和第一列连通的O变成Y
+        for(int i=0; i<m; i++){
+            if(board[i][0]=='O'){
+                bfs(board, i, 0);
+            }
+        }
+     
+        // 和最后一列连通的O变成Y
+        for(int i=0; i<m; i++){
+            if(board[i][n-1]=='O'){
+                bfs(board, i, n-1);
+            }
+        }
+     
+        // O变成X，Y变成O
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(board[i][j]=='O'){
+                    board[i][j]='X';
+                }
+                if(board[i][j]=='Y'){
+                    board[i][j]='O';
+                }
+            }
+        }
+    }
+    
+    public void bfs(char[][] board, int row, int col) {
+        int m=board.length;
+        int n=board[0].length;
+     
+        int index = row*n+col;
+        Queue<Integer> queue = new LinkedList<Integer>();
+        queue.offer(index);
+        board[row][col]='Y';
+     
+        while(!queue.isEmpty()){
+            int top = queue.poll();
+            int i=top/n;
+            int j=top%n;
+     
+            // 上面的元素如果是O变Y
+            if(i-1>=0 && board[i-1][j]=='O'){
+                board[i-1][j]='Y';
+                queue.offer((i-1)*n+j);
+            }
+
+            // 下面的元素如果是O变Y
+            if(i+1<m && board[i+1][j]=='O'){
+                board[i+1][j]='Y';
+                queue.offer((i+1)*n+j);
+            }
+
+            // 左面的元素如果是O变Y
+            if(j-1>=0 && board[i][j-1]=='O'){
+                board[i][j-1]='Y';
+                queue.offer(i*n+j-1);
+            }
+
+            // 右面的元素如果是O变Y
+            if(j+1<n && board[i][j+1]=='O'){
+                board[i][j+1]='Y';
+                queue.offer(i*n+j+1);
+            }
+        }
+    }
+}
