@@ -1,0 +1,89 @@
+Word Break
+
+描述
+
+Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the dictionary does not contain duplicate words.
+
+For example, given
+s = "leetcode",
+dict = ["leet", "code"].
+
+Return true because "leetcode" can be segmented as "leet code".
+
+UPDATE (2017/1/4):
+The wordDict parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes.
+
+分析
+
+解法1：DFS
+
+ 用DFS做，输入为"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...b"
+ ["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"]
+ 时，会time limit exceeded
+
+解法2：DP
+
+用dp[i,j]表示从i开始长度为j的字符串是否可以切分。如果可以切分有两种可能
+1. 它本身就在字典里
+2. 虽然它不在字典里，但是存在i<k<i+j使dp[i,k]和dp[i+k,j-k]都为true。
+可见dp[i,j]的值取决于dp[i,k]和dp[i+k,j-k],所以这两个值需要比其先计算出来。
+所以要直到长度为j的字符串是否可以切分需要先直到长度小于j的字符串是否可切分。所以
+最外层循环用字符串长度遍历。
+
+时间复杂度O(n^2)，空间复杂度O(n^2)
+
+代码
+
+方法1：
+
+public class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        
+        if(wordDict.contains(s)) {
+            return true;
+        }
+        
+        boolean result = false;
+        
+        for(String word: wordDict) {
+            if(s.startsWith(word)) {
+                boolean canBreak = wordBreak(s.substring(word.length()), wordDict);
+                if(canBreak) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        
+        return result;
+    }
+}
+
+方法2：
+
+public class Solution {
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[][] dp = new boolean[s.length()][s.length()+1];
+
+        // 长度从1开始
+        for(int j=1; j<=s.length(); j++) {
+            //i<=s.length()-j是说长度不要越界，比如abcd此时j=2，s的len是4，4-2=2是说最多i移动到c，因为c的位置是4-2=2
+            for(int i=0; i<=s.length()-j; i++) {
+                String subString = s.substring(i, i+j);
+                if(wordDict.contains(subString)) {
+                    dp[i][j] = true;
+                } else {
+                    for(int k=1; k<=j; k++) {
+                        if(dp[i][k] && dp[i+k][j-k]) {
+                            dp[i][j] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return dp[0][s.length()];
+    }
+}
