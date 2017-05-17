@@ -1,0 +1,44 @@
+Unique Binary Search Trees
+
+描述
+
+Given n, how many structurally unique BST's (binary search trees) that store values 1...n?
+
+For example,
+Given n = 3, there are a total of 5 unique BST's.
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+   
+分析
+
+给n个不重复的整数比如1,2,...,n来组BST。BST的特点是如果以i为根0到i-1都只能出现在左子树（0为空子树），i+1到n都
+只能出现在右子树。如果左子树有x种变化，右子树有y种变化，则以i为根节点的BST有x*y种。
+f(n)表示能存储1,2,...,n所有数的BST的数量
+f(n) = f(0)*f(n-1) + f(1)*f(n-2) + ... f(i-1)*f((n-1)-(i-1))...+ f(n-2)*f(1) + f(n-1)*f(0)
+BST要求左子树节点全比当前节点小，右子树节点全比当前节点大
+
+时间复杂度O(n^2)，空间复杂度O(n)
+
+代码
+
+public class Solution {
+    
+    public int numTrees(int n) {
+        int[] count = new int[n+1];
+        
+        count[0] = 1;
+        
+        for(int i=1; i<=n; i++) {// 以1,2,3,...,n分别为根节点
+            for(int k=0; k<=i-1; k++) {
+                count[i] = count[i] + count[k]*count[(i-1)-k];
+            }
+        }
+        
+        return count[n];
+    }
+}
+
