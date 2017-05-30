@@ -1,0 +1,57 @@
+Convert Sorted List to Binary Search Tree
+
+描述
+
+Given a singly linked list where elements are sorted in ascending order, convert it to a height balanced BST.
+
+分析
+
+list不像array可以O(1)的时间查找元素，要找中间元素需要快慢指针遍历。
+所以选择build bottom-up而不是top-down
+
+时间复杂度O(n)，空间复杂度O(logn)
+
+代码
+
+public class Solution {
+    ListNode current = null;
+    
+    public TreeNode sortedListToBST(ListNode head) {
+        if(head == null)
+            return null;
+        
+        current = head;
+        int len = getLength(head);
+        TreeNode root = sortedListToBST(0, len-1);
+        
+        return root;
+    }
+    
+    private TreeNode sortedListToBST(int start, int end) {
+        if(start > end)
+            return null;
+        
+        int mid = start + (end -start)/2;
+        
+        TreeNode left = sortedListToBST(start, mid-1);
+        TreeNode parent = new TreeNode(current.val);
+        current = current.next;
+        TreeNode right = sortedListToBST(mid+1, end);
+        
+        parent.left = left;
+        parent.right = right;
+        
+        return parent;
+    }
+    
+    private int getLength(ListNode node) {
+        int count = 0;
+        
+        while(node != null) {
+            count++;
+            node = node.next;
+        }
+        
+        return count;
+    }
+}
