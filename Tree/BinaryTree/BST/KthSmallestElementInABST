@@ -1,0 +1,45 @@
+Kth Smallest Element in a BST
+
+描述
+
+Given a binary search tree, write a function kthSmallest to find the kth smallest element in it.
+
+Note: 
+You may assume k is always valid, 1 ? k ? BST's total elements.
+
+Follow up:
+What if the BST is modified (insert/delete operations) often and you need to find the kth smallest frequently? 
+How would you optimize the kthSmallest routine?
+
+分析
+
+中序遍历
+
+时间复杂度O(n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public int kthSmallest(TreeNode root, int k) {
+        TreeNode current = root;
+        Stack<TreeNode> stack = new Stack<>();
+        
+        while(!stack.isEmpty() || current != null) {
+            
+            if(current != null) {
+                // 只要左子树不为空就不断入栈左子树
+                stack.push(current);
+                current = current.left;
+            } else {
+                // 左子树为空是，弹出父结点加入list然后把右子树入栈，这就是中序遍历
+                current = stack.pop();
+                if(--k == 0)
+                    return current.val;
+                current = current.right;
+            }
+        }
+        
+        // 为了让代码通过编译，不会被执行
+        return 0;
+    } 
+}
