@@ -1,0 +1,75 @@
+Minimum Depth of Binary Tree
+
+描述
+
+Given a binary tree, find its minimum depth.
+
+The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
+
+分析
+
+解法1：递归
+
+如果一个结点为null要看其是否有兄弟节点，如果没有表明父结点没有孩子，此时返回0。
+如果有兄弟结点，则父结点需要兄弟结点的深度，此时此结点不能返回0，而为了保证
+父结点能得到兄弟结点的深度，此结点应该返回无穷大（用Integer.MAX_VALUE替代），这样两兄弟返回的最小值一定
+是其兄弟结点的返回值。
+
+时间复杂度O(n)，空间复杂度O(logn)
+
+解法2：level order tracersal
+
+也可以level traversal的方法做，如果有非null孩子则放入queue，如果任意结点没有孩子则返回当前的level
+
+时间复杂度O(n)，空间复杂度O(n)
+
+代码
+
+方法1：递归
+
+public class Solution {
+    public int minDepth(TreeNode root) {
+        return minDepth(root, false);
+    }
+
+    private int minDepth(TreeNode root, boolean hasBrother) {
+        if(root == null)
+            return hasBrother ? Integer.MAX_VALUE : 0;
+        
+        return 1 + Math.min(minDepth(root.left, root.right != null), minDepth(root.right, root.left != null));
+    }
+}
+
+方法2：level order traveral
+
+public class Solution {
+    public int minDepth(TreeNode root) {
+        if(root == null)
+            return 0;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int levels = 1;
+        
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            
+            for(int i=0; i<size; i++) {
+                TreeNode node = queue.poll();
+                
+                if(node.left == null && node.right == null)
+                    return levels;
+
+                if(node.left != null)
+                    queue.offer(node.left);
+                
+                if(node.right != null)
+                    queue.offer(node.right);
+            }
+            
+            levels++;
+        }
+        
+        return levels;
+    }
+}
