@@ -1,0 +1,65 @@
+Binary Tree Maximum Path Sum
+
+描述
+
+Given a binary tree, find the maximum path sum.
+
+For this problem, a path is defined as any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The path must contain at least one node and does not need to go through the root.
+
+For example:
+Given the below binary tree,
+
+       1
+      / \
+     2   3
+Return 6.
+
+分析
+
+这题很难，路径可以从任意节点开始，到任意节点结束。
+可以利用“最大连续子序列和”问题的思路，见这节Maximum Subarray。如果说Array只有一个方向的话，那么Binary Tree其实只是左、右两个方向而已，我们需要比较两个方向上的值。
+不过，Array可以从头到尾遍历，那么Binary Tree怎么办呢，我们可以采用Binary Tree最常用的dfs来进行遍历。先算出左右子树的结果L和R，如果L大于0，那么对后续结果是有利的，我们加上L，如果R大于0，对后续结果也是有利的，继续加上R。
+
+1. 当前结点及其子节点算出sum，然后和max比较，如果更大说明以当前结点为root的子树有更大的max，所以更新max。
+2. 当前结点不返回给父节点以当前结点为root的子树的总sum，只返回左sum和右sum中较大的那一个。
+
+比如
+     1
+   /   \
+  2     3
+ / \   / \
+4   5 6  100
+
+5+2+1+3+100=111
+
+时间复杂度O(n)，空间复杂度O(logn)
+
+代码
+
+public class Solution {
+    private int max;
+    
+    public int maxPathSum(TreeNode root) {
+        max = Integer.MIN_VALUE;
+        dfs(root);
+        return max;
+    }
+    
+    private int dfs(TreeNode root) {
+        if(root == null)
+            return 0;
+        
+        int sum = root.val;
+
+        int l = dfs(root.left);
+        if(l > 0)
+            sum += l;
+
+        int r = dfs(root.right);
+        if(r > 0)
+            sum += r;
+            
+        max = Math.max(sum, max);
+        return Math.max(l, r) > 0 ? Math.max(l, r) + root.val : root.val;
+    }
+}
