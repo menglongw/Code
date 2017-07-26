@@ -1,0 +1,59 @@
+Combinations
+
+描述
+
+Given two integers n and k, return all possible combinations of k numbers out of 1 ... n.
+
+For example,
+If n = 4 and k = 2, a solution is:
+
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+
+分析
+
+提前返回时一个优化
+
+时间复杂度O(n*(n-1)*...*(n-k+1))，空间复杂度?
+
+代码
+
+public class Solution {
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        
+        if(n<1 || n<k) {
+            return result;
+        }
+        
+        dfs(result, new ArrayList<Integer>(), n, k, 1);
+        return result;
+    }
+    
+    private void dfs(List<List<Integer>> result, List<Integer> combination, int n, int k, int current) {
+        if(combination.size() == k) {
+            result.add(new ArrayList<Integer>(combination));
+            return;
+        }
+        
+        // 如果剩下的数不够了，则提前返回
+        // 用n-current+1而不是n-current是因为此时current的数还没有被加入到combination里
+        // 之后for循环时才加入
+        if(k-combination.size() > n-current+1) {
+            return;
+        }
+        
+        // one based
+        for(int i=current; i<=n; i++) {
+            combination.add(i);
+            dfs(result, combination, n, k, i+1);
+            combination.remove(combination.size()-1);
+        }
+    }
+}
