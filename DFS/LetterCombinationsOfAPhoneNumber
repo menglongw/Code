@@ -1,0 +1,54 @@
+Letter Combinations of a Phone Number
+
+描述
+
+Given a digit string, return all possible letter combinations that the number could represent.
+
+Input:Digit string "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+Note:
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+
+分析
+
+时间复杂度O(3^n)，空间复杂度O(n)
+有n位电话号码，每一位可能按出来的字母是3-4个，所以就是 (3~4)^n
+
+如果迭代的话，时间复杂度O(3^n)，空间复杂度O(1)
+
+代码
+
+public class Solution {
+    public List<String> letterCombinations(String digits) {
+        List<String> result = new ArrayList<>();
+
+        if(digits==null || digits.isEmpty())
+           return result; 
+            
+        dfs(result, "", digits, 0);
+        return result;
+    }
+
+    private void dfs(List<String> result, String buffer, String digits, int current) {
+        if(buffer.length() == digits.length()) {// 也可以用current == digits.length()作为终止条件
+            result.add(buffer);
+            return;
+        }
+        
+        String chs = getLetters(digits.charAt(current));
+        
+        for(int i=0; i<chs.length(); i++) {
+            dfs(result, buffer + chs.charAt(i), digits, current+1);
+        }
+        
+    }
+    
+    private static final String[] keyboard =
+            new String[] {" ", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+
+    
+    private String getLetters(char digit) {
+        return keyboard[digit - '0'];
+    }
+}
+
