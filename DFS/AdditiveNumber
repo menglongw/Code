@@ -1,0 +1,66 @@
+Additive Number
+
+描述
+
+Additive number is a string whose digits can form additive sequence.
+
+A valid additive sequence should contain at least three numbers. Except for the first two numbers, each subsequent number in the sequence must be the sum of the preceding two.
+
+For example:
+"112358" is an additive number because the digits can form an additive sequence: 1, 1, 2, 3, 5, 8.
+
+1 + 1 = 2, 1 + 2 = 3, 2 + 3 = 5, 3 + 5 = 8
+"199100199" is also an additive number, the additive sequence is: 1, 99, 100, 199.
+1 + 99 = 100, 99 + 100 = 199
+Note: Numbers in the additive sequence cannot have leading zeros, so sequence 1, 2, 03 or 1, 02, 3 is invalid.
+
+Given a string containing only digits '0'-'9', write a function to determine if it's an additive number.
+
+Follow up:
+How would you handle overflow for very large input integers?
+
+分析
+
+这是一个多阶段决策问题，且必须走到字符串最后一个字符才能得出结论，因此适合用深搜或DP。
+再仔细想一下状态转换图，每次索引变化一下，就跟之前的完全没有重复，因此状态转换图是一颗树，不是DAG，因此不存在重叠子问题，因此排除DP，本题应该用深搜。
+
+时间复杂度？空间复杂度？
+
+代码
+
+class Solution {
+    public boolean isAdditiveNumber(String num) {
+        if(num == null || num.isEmpty() || num.length() < 3)
+            return false;
+        
+        for(int p2=1; p2<num.length(); p2++) {
+            //p2<num.length()/2不行，比如123
+            if(num.charAt(0) == '0' && p2>1)
+                    continue;
+
+            for(int p3=p2+1; p3<num.length(); p3++) {
+                if(num.charAt(p2) == '0' && p3>p2+1)
+                    continue;
+
+                if(dfs(num, 0, p2, p3))
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private boolean dfs(String num, int p1, int p2, int p3) {
+        long n1 = Long.parseLong(num.substring(p1, p2));
+        long n2 = Long.parseLong(num.substring(p2, p3));
+        String sum = Long.valueOf(n1 + n2).toString();
+
+        if(!num.substring(p3).startsWith(sum))
+            return false;
+
+        if(p3+sum.length() == num.length())
+            return true;
+
+        return dfs(num, p2, p3, p3+sum.length());
+    }
+}
