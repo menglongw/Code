@@ -1,0 +1,71 @@
+Palindrome Partitioning
+
+描述
+
+Given a string s, partition s such that every substring of the partition is a palindrome.
+
+Return all possible palindrome partitioning of s.
+
+For example, given s = "aab",
+Return
+
+[
+  ["aa","b"],
+  ["a","a","b"]
+]
+
+分析
+
+先标记是否为回文，然后dfs把回文子串加入列表。也可以先切子串然后判断是否是回文。这里用第一种方法。
+
+时间复杂度？空间复杂度？
+
+代码
+
+public class Solution {
+    public List<List<String>> partition(String s) {
+        List<List<String>> result = new ArrayList<>();
+        if(s == null || s.isEmpty())
+            return result;
+            
+        int len = s.length();
+
+        /*
+        这里标记回文二维数组是从后往前回溯，如果从前往后的话，不能
+        用这种方法，因为p[i][j]取决于p[i+1][j-1]，i+1这个起点已经
+        在i这个起点之后没有办法先计算出来。所以如果从前往后算要按长度算，
+        先算len=1的再算len=2的，这样p[i+1][j-1]已经在计算更短的长度时算出来了，
+        可以用于计算p[i][j]
+        */
+        boolean[][] palindrome = new boolean[len][len];
+        
+        for(int i=len-1; i>=0; i--) {
+            for(int j=i; j<len; j++) {
+                // 两个字符串相同，并且
+                // 1. 同一个位置上的字符
+                // 2. 相邻的两个字符
+                // 3. 不是同一个位置上的字符，也不相邻，但是palindrome[i+1][j-1]是回文
+                if(s.charAt(i) == s.charAt(j) && (j-i < 2 || palindrome[i+1][j-1]))
+                        palindrome[i][j] = true;
+            }
+        }
+        
+        dfs(result, new ArrayList<String>(), s, 0, palindrome);
+        return result;
+    }
+    
+    private void dfs(List<List<String>> result, List<String> current, String s, int start, boolean[][] palindrome) {
+        if(start == s.length()) {
+            result.add(new ArrayList<String>(current));
+            return;
+        }
+
+        for(int i=start; i<s.length(); i++) {
+            if(palindrome[start][i]) {
+                current.add(s.substring(start, i+1));
+                dfs(result, current, s, i+1, palindrome);
+                current.remove(current.size()-1);
+            }
+        }
+    }
+}
