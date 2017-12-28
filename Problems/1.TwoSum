@@ -1,0 +1,38 @@
+Two Sum
+
+描述
+
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+Example:
+Given nums = [2, 7, 11, 15], target = 9,
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+
+分析
+
+想法1：暴力算法，双层循环。复杂度O(n^2)，会超时
+想法2：先排序，然后左右夹逼，排序O(nlogn)，左右夹逼O(n)，最终O(nlogn)。但是注意，这题需要返回的是下标，而不是数字本身，因此这个方法行不通。
+
+用一个哈希表存储每个数对应的下标，复杂度O(n).
+
+时间复杂度: O(n)，空间复杂度: O(n)
+
+代码
+
+public class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int[] result = null;
+        
+        for(int i=0; i<nums.length; i++) {
+            if(map.containsKey(target-nums[i])) {
+                result = new int[]{map.get(target-nums[i]), i};
+            } else {
+                map.put(nums[i], i);
+            }
+        }
+        
+        return result;
+    }
+}
